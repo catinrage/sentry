@@ -38,6 +38,6 @@ extend type Mutation {
   clientCreate(input: ClientInputCreate!): ClientMutationResponse!
   " updates an existing client "
   clientUpdate(id: ID!, input: ClientInputUpdate!): ClientMutationResponse!
-  " deletes an existing client "
+  " deletes an client "
   clientDelete(id: ID!): ClientMutationResponse!
 }
