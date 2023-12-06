@@ -8,7 +8,6 @@
     "dev": "bun run --watch ./src/index.ts & bun codegen",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "bun run ./src/index.ts",
-    "build": "bun bun ./src/index.ts ./src/index.html ./src/db.ts && ./node_modules.bun > node_modules.js",
     "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
     "format": "prettier --write '*/**/*.{ts,tsx,json}'",
     "codegen": "graphql-codegen --config codegen.yml --watch"
