@@ -1,0 +1,39 @@
+scalar DateTime
+scalar Date
+scalar Object
+
+"graphql Query root"
+type Query {
+  " lets play ping pong "
+  ping: String!
+}
+
+"graphql Mutation root"
+type Mutation {
+  " placeholder "
+  _empty: String
+}
+
+"contains information about the error that occurred"
+type Error {
+  "error code (ErrorCodeEnum)"
+  code: ErrorCodeEnum!
+  "error message"
+  message: String!
+  "contains extra data about the error"
+  extension: Object
+}
+
+" interface for mutation responses "
+interface MutationResponse {
+  "indicates whether the mutation was successful"
+  success: Boolean!
+  "contains information about errors that occurred"
+  errors: [Error!]!
+}
+
+" enum for possible error codes "
+enum ErrorCodeEnum {
+  BAD_INPUT
+  UNKNOWN_ERROR
+}

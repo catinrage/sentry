@@ -1,0 +1,43 @@
+" a client is a person, a company or an organization"
+type Client {
+  " the unique identifier, also used as the primary key "
+  id: ID!
+  " the name of the client "
+  name: String!
+}
+
+extend type Query {
+  " returns a client given its unique identifier "
+  client(id: ID!): Client
+  " returns a list of clients "
+  clients: [Client!]!
+}
+
+" input fields to create a new client "
+input ClientInputCreate {
+  " the name of the client "
+  name: String!
+}
+
+" input fields to update an existing client "
+input ClientInputUpdate {
+  " the name of the client "
+  name: String
+}
+
+" the response from the client mutation "
+type ClientMutationResponse implements MutationResponse {
+  success: Boolean!
+  errors: [Error!]!
+  " the client that was mutated "
+  client: Client
+}
+
+extend type Mutation {
+  " creates a new client "
+  clientCreate(input: ClientInputCreate!): ClientMutationResponse!
+  " updates an existing client "
+  clientUpdate(id: ID!, input: ClientInputUpdate!): ClientMutationResponse!
+  " deletes an existing client "
+  clientDelete(id: ID!): ClientMutationResponse!
+}

@@ -1,0 +1,15 @@
+schema: './src/modules/**/types/*.graphql'
+watch: true
+generates:
+  './src/modules/':
+    config:
+      contextType: ./context#Context
+    preset: 'graphql-modules'
+    presetConfig:
+      baseTypesPath: '../codegen/graphql.ts'
+      filename: 'codegen/module-types.ts'
+    plugins:
+      - add:
+          content: '/* eslint-disable */'
+      - typescript
+      - typescript-resolvers
