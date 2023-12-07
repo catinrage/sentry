@@ -1,0 +1,43 @@
+" a cnc machine "
+type Machine {
+  " the unique identifier, also used as the primary key "
+  id: ID!
+  " the name of the machine "
+  name: String!
+}
+
+extend type Query {
+  " returns a machine given its unique identifier "
+  machine(id: ID!): Machine
+  " returns a list of machines "
+  machines: [Machine!]!
+}
+
+" input fields to create a new machine "
+input MachineInputCreate {
+  " the name of the machine "
+  name: String!
+}
+
+" input fields to update an existing machine "
+input MachineInputUpdate {
+  " the name of the machine "
+  name: String
+}
+
+" the response from the machine mutation "
+type MachineMutationResponse implements MutationResponse {
+  success: Boolean!
+  errors: [Error!]!
+  " the machine that was mutated "
+  machine: Machine
+}
+
+extend type Mutation {
+  " creates a new machine "
+  machineCreate(input: MachineInputCreate!): MachineMutationResponse!
+  " updates an existing machine "
+  machineUpdate(id: ID!, input: MachineInputUpdate!): MachineMutationResponse!
+  " deletes an machine "
+  machineDelete(id: ID!): MachineMutationResponse!
+}

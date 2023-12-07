@@ -1,6 +1,5 @@
 import { ClientModule } from './codegen/module-types';
 import { ClientService } from './providers';
-import { PrismaService } from '../common/providers/prisma.provider';
 
 export const resolvers: ClientModule.Resolvers = {
   Query: {
