@@ -1,18 +1,14 @@
-import { Inject, Injectable, InjectionToken } from 'graphql-modules';
-import { PrismaService } from '../../common/providers/prisma.provider';
 import { Machine, Prisma } from '@prisma/client';
-import { machineCreateInputSchema, machineUpdateInputSchema, machineDeleteInputSchema } from '../validator';
-import { MachineMutationResponse } from '../../../codegen/graphql';
-import { handleError } from '../../../helpers/errors';
+import { MachineMutationResponse } from '../codegen/graphql';
+import { prisma } from '@providers';
+import validators from '@validators';
+import { errors } from '@helpers';
 
-@Injectable()
-export class MachineService {
-  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
-
+class MachineService {
   async create({ name }: Prisma.MachineCreateInput): Promise<MachineMutationResponse> {
     try {
-      await machineCreateInputSchema.parseAsync({ name });
-      const machine = await this.prisma.machine.create({
+      await validators.machine.machineCreateInputSchema.parseAsync({ name });
+      const machine = await prisma.machine.create({
         data: {
           name,
         },
@@ -23,14 +19,14 @@ export class MachineService {
         success: true,
       };
     } catch (error) {
-      return handleError(error);
+      return errors.handle(error);
     }
   }
 
   async update(id: string, { name }: Prisma.MachineUpdateInput): Promise<MachineMutationResponse> {
     try {
-      await machineUpdateInputSchema.parseAsync({ id, name });
-      const machine = await this.prisma.machine.update({
+      await validators.machine.machineUpdateInputSchema.parseAsync({ id, name });
+      const machine = await prisma.machine.update({
         where: {
           id,
         },
@@ -44,14 +40,14 @@ export class MachineService {
         success: true,
       };
     } catch (error) {
-      return handleError(error);
+      return errors.handle(error);
     }
   }
 
   async delete(id: string): Promise<MachineMutationResponse> {
     try {
-      await machineDeleteInputSchema.parseAsync({ id });
-      const machine = await this.prisma.machine.delete({
+      await validators.machine.machineDeleteInputSchema.parseAsync({ id });
+      const machine = await prisma.machine.delete({
         where: {
           id,
         },
@@ -62,17 +58,19 @@ export class MachineService {
         success: true,
       };
     } catch (error) {
-      return handleError(error);
+      return errors.handle(error);
     }
   }
 
   async findUnique(where: Prisma.MachineWhereUniqueInput): Promise<Machine | null> {
-    return this.prisma.machine.findUnique({
+    return prisma.machine.findUnique({
       where,
     });
   }
 
   async findMany(): Promise<Machine[]> {
-    return this.prisma.machine.findMany();
+    return prisma.machine.findMany();
   }
 }
+
+export const service = new MachineService();

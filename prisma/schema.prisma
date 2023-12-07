@@ -23,24 +23,87 @@ model Client {
 }
 
 model Machine {
-  id   String @id @default(cuid())
-  name String @unique
+  id        String          @id @default(cuid())
+  name      String          @unique
+  type      MachineTypeEnum @default(CNC_MILLING)
+  available Boolean         @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Project {
-  id       Int    @id @default(autoincrement())
+  id       String    @id @default(cuid())
+  code     String    @unique
   title    String
-  code     String @unique
-  client   Client @relation(fields: [clientId], references: [name], onDelete: Restrict)
-  quantity Int
-
   clientId String
+  quantity Int
+  fee      Int
+  dueDate  DateTime?
+
+  client Client         @relation(fields: [clientId], references: [name], onDelete: Restrict)
+  stages ProjectStage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([clientId, title])
+}
+
+model ProjectStage {
+  id                  String  @id @default(cuid())
+  projectId           String
+  order               Int     @default(1)
+  title               String?
+  durationCycle       Int
+  durationPreparation Int
+  durationSetup       Int
+  numberOfOutputParts Int
+  numberOfSetups      Int
+  efficiency          Float   @default(1)
+
+  project   Project                @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  schedules ProjectStageSchedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, order])
+}
+
+model ProjectStageSchedule {
+  id        String                @id @default(cuid())
+  stageId   String
+  dateStart DateTime
+  quantity  Int
+  state     ProjectStageStateEnum @default(NOT_STARTED)
+
+  interruptions ProjectStageScheduleInterruption[]
+  stage         ProjectStage                       @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProjectStageScheduleInterruption {
+  id String @id @default(cuid())
+
+  reason     String
+  scheduleId String
+  dateStart  DateTime
+  dateEnd    DateTime
+
+  schedule ProjectStageSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+}
+
+enum ProjectStageStateEnum {
+  NOT_STARTED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+}
+
+enum MachineTypeEnum {
+  CNC_MILLING
+  CNC_TURNING
 }

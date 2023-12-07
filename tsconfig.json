@@ -8,7 +8,15 @@
     "outDir": "build",
     "rootDir": "src",
     "types": ["bun-types"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "@modules": ["src/modules"],
+      "@services": ["src/services"],
+      "@providers": ["src/providers"],
+      "@validators": ["src/validators"],
+      "@helpers": ["src/helpers"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "build"]

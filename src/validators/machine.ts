@@ -1,6 +1,6 @@
 import { z as zod } from 'zod';
-import { MachineService } from './providers';
-import { PrismaClient } from '@prisma/client';
+import services from '@services';
+import { prisma } from '@providers';
 
 /**
  * Checks if the given machine name is unique.
@@ -8,9 +8,7 @@ import { PrismaClient } from '@prisma/client';
  * @returns A boolean indicating whether the machine name is unique or not.
  */
 async function isMachineNameUnique(name: string) {
-  const prisma = new PrismaClient();
-  const machineService = new MachineService(prisma);
-  const machine = await machineService.findUnique({
+  const machine = await services.machine.findUnique({
     name,
   });
   prisma.$disconnect();
@@ -23,9 +21,7 @@ async function isMachineNameUnique(name: string) {
  * @returns A Promise that resolves to the machine object if the ID is valid, or null otherwise.
  */
 async function isMachineIdValid(id: string) {
-  const prisma = new PrismaClient();
-  const machineService = new MachineService(prisma);
-  const machine = await machineService.findUnique({
+  const machine = await services.machine.findUnique({
     id,
   });
   prisma.$disconnect();

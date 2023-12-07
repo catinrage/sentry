@@ -1,4 +1,4 @@
-schema: './src/modules/**/types/*.graphql'
+schema: './src/modules/**/*.graphql'
 watch: true
 generates:
   './src/modules/':

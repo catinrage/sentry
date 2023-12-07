@@ -1,6 +1,6 @@
 import { z as zod } from 'zod';
-import { ClientService } from './providers';
-import { PrismaClient } from '@prisma/client';
+import services from '@services';
+import { prisma } from '@providers';
 
 /**
  * Checks if the given client name is unique.
@@ -8,9 +8,7 @@ import { PrismaClient } from '@prisma/client';
  * @returns A boolean indicating whether the client name is unique or not.
  */
 async function isClientNameUnique(name: string) {
-  const prisma = new PrismaClient();
-  const clientService = new ClientService(prisma);
-  const client = await clientService.findUnique({
+  const client = await services.client.findUnique({
     name,
   });
   prisma.$disconnect();
@@ -23,9 +21,7 @@ async function isClientNameUnique(name: string) {
  * @returns A Promise that resolves to the client object if the ID is valid, or null otherwise.
  */
 async function isClientIdValid(id: string) {
-  const prisma = new PrismaClient();
-  const clientService = new ClientService(prisma);
-  const client = await clientService.findUnique({
+  const client = await services.client.findUnique({
     id,
   });
   prisma.$disconnect();

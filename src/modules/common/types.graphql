@@ -35,5 +35,6 @@ interface MutationResponse {
 " enum for possible error codes "
 enum ErrorCodeEnum {
   BAD_INPUT
+  ACCESS_DENIED
   UNKNOWN_ERROR
 }

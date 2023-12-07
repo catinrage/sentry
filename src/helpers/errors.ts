@@ -47,7 +47,7 @@ export function handleUnknownError(): MutationResponse {
  * @param error - The error to handle.
  * @returns The MutationResponse based on the error.
  */
-export function handleError(error: unknown): MutationResponse {
+export function handle(error: unknown): MutationResponse {
   if (error instanceof zod.ZodError) {
     return handleValidationError(error);
   } else {

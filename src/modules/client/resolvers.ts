@@ -1,37 +1,32 @@
 import { ClientModule } from './codegen/module-types';
-import { ClientService } from './providers';
+import services from '@services';
 
 export const resolvers: ClientModule.Resolvers = {
   Query: {
     client: async (root, { id }, { injector }) => {
-      const clientService = injector.get(ClientService);
-      const client = await clientService.findUnique({
+      const client = await services.client.findUnique({
         id,
       });
       return client;
     },
     clients: async (root, args, { injector }) => {
-      const clientService = injector.get(ClientService);
-      const clients = await clientService.findMany();
+      const clients = await services.client.findMany();
       return clients;
     },
   },
   Mutation: {
     clientCreate: async (root, { input }, { injector }) => {
-      const clientService = injector.get(ClientService);
-      return await clientService.create({
+      return await services.client.create({
         ...input,
       });
     },
     clientUpdate: async (root, { id, input }, { injector }) => {
-      const clientService = injector.get(ClientService);
-      return await clientService.update(id, {
+      return await services.client.update(id, {
         name: input.name || undefined,
       });
     },
     clientDelete: async (root, { id }, { injector }) => {
-      const clientService = injector.get(ClientService);
-      return await clientService.delete(id);
+      return await services.client.delete(id);
     },
   },
 };
