@@ -12,7 +12,3 @@ loadedModules = loadedModules.map((module) => {
 });
 
 export default loadedModules;
-
-export * as common from './common';
-export * as client from './client';
-export * as machine from './machine';
