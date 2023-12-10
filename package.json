@@ -10,7 +10,8 @@
     "start": "bun run ./src/index.ts",
     "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
     "format": "prettier --write '*/**/*.{ts,tsx,json}'",
-    "codegen": "graphql-codegen --config codegen.yml --watch"
+    "codegen": "graphql-codegen --config codegen.yml --watch",
+    "migrate": "prisma migrate dev --preview-feature"
   },
   "keywords": [],
   "author": "",

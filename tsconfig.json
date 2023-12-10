@@ -12,9 +12,8 @@
     "baseUrl": ".",
     "paths": {
       "@modules": ["src/modules"],
-      "@services": ["src/services"],
       "@providers": ["src/providers"],
-      "@validators": ["src/validators"],
+      "@services": ["src/aliases/services.ts"],
       "@helpers": ["src/helpers"]
     }
   },

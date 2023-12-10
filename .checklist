@@ -1,0 +1,24 @@
+# Checklist
+
+## Create a Module
+
+1. create the folder with respective name in the modules folder
+2. create types for the module, notice that if its gonna extend any other module | `typedef.graphql`
+3. pull related enums from prisma if any exists | `enums.graphql`
+4. create validation for the module if needed | `validator.ts`
+5. create the service for that module if needed | `service.ts`
+6. create resolver if needed | `resolver.ts`
+7. create module object in the index.ts | `index.ts`
+8. add the service to `aliases` export
+
+-final folder structure :
+
+```bash
+   [module-name]/
+   ┣ enums.graphql
+   ┣ index.ts
+   ┣ resolvers.ts
+   ┣ service.ts
+   ┣ types.graphql
+   ┗ validators.ts
+```

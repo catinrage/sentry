@@ -4,6 +4,13 @@ type Machine {
   id: ID!
   " the name of the machine "
   name: String!
+  " type of the machine"
+  type: MachineTypeEnum!
+  " indicates if the machine is currently available "
+  available: Boolean!
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 extend type Query {
@@ -17,27 +24,27 @@ extend type Query {
 input MachineInputCreate {
   " the name of the machine "
   name: String!
+  " type of the machine"
+  type: MachineTypeEnum!
+  " indicates if the machine is currently available "
+  available: Boolean!
 }
 
 " input fields to update an existing machine "
 input MachineInputUpdate {
   " the name of the machine "
   name: String
-}
-
-" the response from the machine mutation "
-type MachineMutationResponse implements MutationResponse {
-  success: Boolean!
-  errors: [Error!]!
-  " the machine that was mutated "
-  machine: Machine
+  " type of the machine"
+  type: MachineTypeEnum
+  " indicates if the machine is currently available "
+  available: Boolean
 }
 
 extend type Mutation {
   " creates a new machine "
-  machineCreate(input: MachineInputCreate!): MachineMutationResponse!
+  machineCreate(input: MachineInputCreate!): MutationResponse!
   " updates an existing machine "
-  machineUpdate(id: ID!, input: MachineInputUpdate!): MachineMutationResponse!
+  machineUpdate(id: ID!, input: MachineInputUpdate!): MutationResponse!
   " deletes an machine "
-  machineDelete(id: ID!): MachineMutationResponse!
+  machineDelete(id: ID!): MutationResponse!
 }

@@ -1,32 +1,42 @@
 import { ClientModule } from './codegen/module-types';
-import services from '@services';
+import { ClientService } from './service';
+import { prisma } from '@providers';
 
 export const resolvers: ClientModule.Resolvers = {
-  Query: {
-    client: async (root, { id }, { injector }) => {
-      const client = await services.client.findUnique({
-        id,
-      });
-      return client;
+  Project: {
+    client: async (root) => {
+      return await prisma.project
+        .findUniqueOrThrow({
+          where: {
+            id: root.id,
+          },
+        })
+        .client();
     },
-    clients: async (root, args, { injector }) => {
-      const clients = await services.client.findMany();
-      return clients;
+  },
+  Query: {
+    client: async (root, { id }) => {
+      return await prisma.client.findUnique({
+        where: {
+          id,
+        },
+      });
+    },
+    clients: async () => {
+      return await prisma.client.findMany();
     },
   },
   Mutation: {
-    clientCreate: async (root, { input }, { injector }) => {
-      return await services.client.create({
-        ...input,
+    clientCreate: async (root, { input }) => {
+      return await ClientService.create(input);
+    },
+    clientUpdate: async (root, { id, input }) => {
+      return await ClientService.update(id, {
+        name: input.name ?? undefined,
       });
     },
-    clientUpdate: async (root, { id, input }, { injector }) => {
-      return await services.client.update(id, {
-        name: input.name || undefined,
-      });
-    },
-    clientDelete: async (root, { id }, { injector }) => {
-      return await services.client.delete(id);
+    clientDelete: async (root, { id }) => {
+      return await ClientService.delete(id);
     },
   },
 };

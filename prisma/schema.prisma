@@ -28,6 +28,8 @@ model Machine {
   type      MachineTypeEnum @default(CNC_MILLING)
   available Boolean         @default(true)
 
+  schedules ProjectStageSchedule[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -38,10 +40,10 @@ model Project {
   title    String
   clientId String
   quantity Int
-  fee      Int
+  fee      Int?
   dueDate  DateTime?
 
-  client Client         @relation(fields: [clientId], references: [name], onDelete: Restrict)
+  client Client         @relation(fields: [clientId], references: [id], onDelete: Restrict)
   stages ProjectStage[]
 
   createdAt DateTime @default(now())
@@ -50,36 +52,53 @@ model Project {
   @@unique([clientId, title])
 }
 
-model ProjectStage {
-  id                  String  @id @default(cuid())
-  projectId           String
-  order               Int     @default(1)
-  title               String?
-  durationCycle       Int
-  durationPreparation Int
-  durationSetup       Int
-  numberOfOutputParts Int
-  numberOfSetups      Int
-  efficiency          Float   @default(1)
+model ProjectStageScheduleMetadata {
+  id String @id @default(cuid())
 
-  project   Project                @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  schedules ProjectStageSchedule[]
+  durationSetup       Int   @default(-1)
+  durationPreparation Int   @default(-1)
+  durationCycle       Int   @default(-1)
+  numberOfOutputParts Int   @default(-1)
+  numberOfSetups      Int   @default(-1)
+  efficiencyEstimated Float @default(-1)
+
+  projectStageId         String? @unique
+  projectStageScheduleId String? @unique
+
+  ProjectStage         ProjectStage?         @relation(fields: [projectStageId], references: [id], onDelete: Cascade)
+  ProjectStageSchedule ProjectStageSchedule? @relation(fields: [projectStageScheduleId], references: [id], onDelete: Cascade)
+}
+
+model ProjectStage {
+  id        String  @id @default(cuid())
+  order     Int     @default(1)
+  title     String?
+  projectId String
+
+  defaultMetadata ProjectStageScheduleMetadata?
+  project         Project                       @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  schedules       ProjectStageSchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([projectId, order])
 }
 
 model ProjectStageSchedule {
-  id        String                @id @default(cuid())
-  stageId   String
-  dateStart DateTime
-  quantity  Int
-  state     ProjectStageStateEnum @default(NOT_STARTED)
+  id         String                @id @default(cuid())
+  stageId    String
+  dateStart  DateTime?
+  dateEnd    DateTime
+  quantity   Int
+  state      ProjectStageStateEnum @default(PENDING)
+  previousId String                @unique
+  machineId  String
 
+  machine       Machine                            @relation(fields: [machineId], references: [id], onDelete: Restrict)
+  metadata      ProjectStageScheduleMetadata?
+  previous      ProjectStageSchedule?              @relation(name: "chain", fields: [previousId], references: [id], onDelete: SetDefault)
+  next          ProjectStageSchedule?              @relation(name: "chain")
   interruptions ProjectStageScheduleInterruption[]
-  stage         ProjectStage                       @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  stage         ProjectStage                       @relation(fields: [stageId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,7 +116,7 @@ model ProjectStageScheduleInterruption {
 }
 
 enum ProjectStageStateEnum {
-  NOT_STARTED
+  PENDING
   IN_PROGRESS
   PAUSED
   COMPLETED
@@ -106,4 +125,5 @@ enum ProjectStageStateEnum {
 enum MachineTypeEnum {
   CNC_MILLING
   CNC_TURNING
+  CNC_WIRECUT
 }

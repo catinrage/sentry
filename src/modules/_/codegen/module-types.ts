@@ -1,22 +1,22 @@
 /* eslint-disable */
 import * as Types from "../../../codegen/graphql";
 import * as gm from "graphql-modules";
-export namespace CommonModule {
+export namespace _Module {
   interface DefinedFields {
     Query: 'ping';
     Mutation: '_empty';
     Error: 'code' | 'message' | 'extension';
-    MutationResponse: 'success' | 'errors';
+    MutationResponse: 'success' | 'errors' | 'id';
   };
   
   interface DefinedEnumValues {
     ErrorCodeEnum: 'BAD_INPUT' | 'ACCESS_DENIED' | 'UNKNOWN_ERROR';
   };
   
+  export type ErrorCodeEnum = DefinedEnumValues['ErrorCodeEnum'];
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
   export type Error = Pick<Types.Error, DefinedFields['Error']>;
-  export type ErrorCodeEnum = DefinedEnumValues['ErrorCodeEnum'];
   export type MutationResponse = Pick<Types.MutationResponse, DefinedFields['MutationResponse']>;
   
   export type Scalars = Pick<Types.Scalars, 'DateTime' | 'Date' | 'Object'>;
@@ -27,12 +27,13 @@ export namespace CommonModule {
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
   export type ErrorResolvers = Pick<Types.ErrorResolvers, DefinedFields['Error'] | '__isTypeOf'>;
-  export type MutationResponseResolvers = Pick<Types.MutationResponseResolvers, DefinedFields['MutationResponse']>;
+  export type MutationResponseResolvers = Pick<Types.MutationResponseResolvers, DefinedFields['MutationResponse'] | '__isTypeOf'>;
   
   export interface Resolvers {
     Query?: QueryResolvers;
     Mutation?: MutationResolvers;
     Error?: ErrorResolvers;
+    MutationResponse?: MutationResponseResolvers;
     DateTime?: Types.Resolvers['DateTime'];
     Date?: Types.Resolvers['Date'];
     Object?: Types.Resolvers['Object'];
@@ -55,6 +56,12 @@ export namespace CommonModule {
       code?: gm.Middleware[];
       message?: gm.Middleware[];
       extension?: gm.Middleware[];
+    };
+    MutationResponse?: {
+      '*'?: gm.Middleware[];
+      success?: gm.Middleware[];
+      errors?: gm.Middleware[];
+      id?: gm.Middleware[];
     };
   };
 }

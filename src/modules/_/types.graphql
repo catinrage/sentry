@@ -4,13 +4,13 @@ scalar Object
 
 "graphql Query root"
 type Query {
-  " lets play ping pong "
+  "lets play ping pong"
   ping: String!
 }
 
 "graphql Mutation root"
 type Mutation {
-  " placeholder "
+  "placeholder"
   _empty: String
 }
 
@@ -24,17 +24,12 @@ type Error {
   extension: Object
 }
 
-" interface for mutation responses "
-interface MutationResponse {
+" type for mutation responses "
+type MutationResponse {
   "indicates whether the mutation was successful"
   success: Boolean!
   "contains information about errors that occurred"
   errors: [Error!]!
-}
-
-" enum for possible error codes "
-enum ErrorCodeEnum {
-  BAD_INPUT
-  ACCESS_DENIED
-  UNKNOWN_ERROR
+  "if mutation was successful this will hold the id for the mutated record"
+  id: String
 }

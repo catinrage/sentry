@@ -1,32 +1,33 @@
 import { MachineModule } from './codegen/module-types';
-import services from '@services';
+import { MachineService } from './service';
+import { prisma } from '@providers';
 
 export const resolvers: MachineModule.Resolvers = {
   Query: {
     machine: async (root, { id }) => {
-      const machine = await services.machine.findUnique({
-        id,
+      return await prisma.machine.findUnique({
+        where: {
+          id,
+        },
       });
-      return machine;
     },
     machines: async (root, args) => {
-      const machines = await services.machine.findMany();
-      return machines;
+      return await prisma.machine.findMany();
     },
   },
   Mutation: {
     machineCreate: async (root, { input }) => {
-      return await services.machine.create({
+      return await MachineService.create({
         ...input,
       });
     },
     machineUpdate: async (root, { id, input }) => {
-      return await services.machine.update(id, {
+      return await MachineService.update(id, {
         name: input.name || undefined,
       });
     },
     machineDelete: async (root, { id }) => {
-      return await services.machine.delete(id);
+      return await MachineService.delete(id);
     },
   },
 };

@@ -1,0 +1,7 @@
+" enum for project state "
+enum ProjectStageStateEnum {
+  PENDING
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+}
