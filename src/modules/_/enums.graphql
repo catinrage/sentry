@@ -2,5 +2,6 @@
 enum ErrorCodeEnum {
   BAD_INPUT
   ACCESS_DENIED
+  DB_ERROR
   UNKNOWN_ERROR
 }

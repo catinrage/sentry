@@ -5,8 +5,6 @@ import { createApplication } from 'graphql-modules';
 import modules from './modules';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 const application = createApplication({
   modules,
 });
@@ -21,7 +19,6 @@ const { url } = await startStandaloneServer(server, {
   context: async ({ req }) => {
     return {
       req,
-      prisma,
     };
   },
 });

@@ -1,0 +1,77 @@
+"contains some metadata about the schedule of a project stage"
+type ProjectStageScheduleMetadata {
+  "a unique identifier"
+  id: ID!
+  "initial setup duration in minutes"
+  durationSetup: Int!
+  "preparation duration before each execution in minutes"
+  durationPreparation: Int!
+  "execution duration in minutes"
+  durationExecution: Int!
+  "how many output parts are produced per execution"
+  numberOfOutputParts: Int!
+  "how many setups are required to produce all output parts"
+  numberOfSetups: Int!
+  "estimated efficiency of the schedule (between 0 and 1)"
+  efficiencyEstimated: Float!
+}
+
+extend type ProjectStage {
+  "default schedule metadata for this stage, each schedule for this stage should be based on this initially"
+  defaultMetadata: ProjectStageScheduleMetadata
+}
+
+extend input ProjectStageInputCreate {
+  "default schedule metadata for this stage, each schedule for this stage should be based on this initially"
+  defaultMetadata: ProjectStageScheduleMetadataInputCreate!
+}
+
+extend input ProjectStageInputUpdate {
+  "default schedule metadata for this stage, each schedule for this stage should be based on this initially"
+  defaultMetadata: ProjectStageScheduleMetadataInputUpdate
+}
+
+extend type ProjectStageSchedule {
+  "metadata for this specific schedule"
+  metadata: ProjectStageScheduleMetadata
+}
+
+extend input ProjectStageScheduleInputCreate {
+  "metadata for this specific schedule"
+  metadata: ProjectStageScheduleMetadataInputCreate!
+}
+
+extend input ProjectStageScheduleInputUpdate {
+  "metadata for this specific schedule"
+  metadata: ProjectStageScheduleMetadataInputUpdate
+}
+
+input ProjectStageScheduleMetadataInputCreate {
+  "initial setup duration in minutes"
+  durationSetup: Int!
+  "preparation duration before each execution in minutes"
+  durationPreparation: Int!
+  "execution duration in minutes"
+  durationExecution: Int!
+  "how many output parts are produced per execution"
+  numberOfOutputParts: Int!
+  "how many setups are required to produce all output parts"
+  numberOfSetups: Int!
+  "estimated efficiency of the schedule (between 0 and 1)"
+  efficiencyEstimated: Float!
+}
+
+input ProjectStageScheduleMetadataInputUpdate {
+  "initial setup duration in minutes"
+  durationSetup: Int!
+  "preparation duration before each execution in minutes"
+  durationPreparation: Int!
+  "execution duration in minutes"
+  durationExecution: Int!
+  "how many output parts are produced per execution"
+  numberOfOutputParts: Int!
+  "how many setups are required to produce all output parts"
+  numberOfSetups: Int!
+  "estimated efficiency of the schedule (between 0 and 1)"
+  efficiencyEstimated: Float!
+}

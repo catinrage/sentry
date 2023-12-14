@@ -1,6 +1,0 @@
-# TODO
-
-- services: error handling is not efficient at all, for example for checking if a field is unique i send a request to server/
-  to check if the record already exists, the better way is to use prisma error system for that, but its also harder to deal with (handle)
-
-- services: some dangerous unhandled throws (findUniqueOrThrow) in some services's findUniqueSafe function

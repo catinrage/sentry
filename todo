@@ -1,0 +1,12 @@
+# TODO
+
+- services: error handling is not efficient at all, for example for checking if a field is unique i send a request to server/
+  to check if the record already exists, the better way is to use prisma error system for that, but its also harder to deal with (handle)
+
+- services: some dangerous unhandled throws (findUniqueOrThrow) in some services's findUniqueSafe function
+
+- modules: add some custion mutation for some modules, for example for machines add a mutation to toggle availability and so on...
+
+- modules: maybe a review on comments for graphlq schema's
+
+- dependency injection: when deleing projects for example it checks if project has any stage and if have throws an error, while project shouldn't know about stages

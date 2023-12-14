@@ -1,0 +1,80 @@
+"a schedule for a project stage"
+type ProjectStageSchedule {
+  "the unique identifier"
+  id: ID!
+  "date when the schedule starts"
+  dateStart: DateTime
+  "estimated date when the schedule ends"
+  dateEndEstimated: DateTime
+  "actual date when the schedule has ended"
+  dateEndActual: DateTime
+  "the quantity that will be processed in this schedule"
+  quantity: Int!
+  "the state of the schedule"
+  state: ProjectStageScheduleStateEnum!
+  "next schedule"
+  next: ProjectStageSchedule
+  "previous schedule"
+  previous: ProjectStageSchedule
+
+  "the machine that is being used for this stage schedule"
+  machine: Machine!
+  "the stage for this schedule"
+  stage: ProjectStage!
+
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Machine {
+  "schedules for this machine"
+  schedules: [ProjectStageSchedule!]
+}
+
+extend type ProjectStage {
+  "schedules for this stage"
+  schedules: [ProjectStageSchedule!]
+}
+
+input ProjectStageScheduleInputCreate {
+  "date when the schedule starts"
+  dateStart: DateTime
+  "date when the schedule ends"
+  dateEnd: DateTime
+  "the quantity that will be processed in this schedule"
+  quantity: Int!
+  "the state of the schedule"
+  state: ProjectStageScheduleStateEnum
+  "id for the previous schedule"
+  previousId: ID
+
+  "the machine that is being used for this stage schedule"
+  machineId: ID!
+  "the stage for this schedule"
+  stageId: ID!
+}
+
+input ProjectStageScheduleInputUpdate {
+  "date when the schedule starts"
+  dateStart: DateTime
+  "date when the schedule ends"
+  dateEnd: DateTime
+  "the quantity that will be processed in this schedule"
+  quantity: Int
+  "the state of the schedule"
+  state: ProjectStageScheduleStateEnum
+  "id for the previous schedule"
+  previousId: ID
+
+  "the machine that is being used for this stage schedule"
+  machineId: ID
+}
+
+extend type Mutation {
+  "create a project stage schedule"
+  projectStageScheduleCreate(input: ProjectStageScheduleInputCreate!): MutationResponse!
+  "update a project stage schedule"
+  projectStageScheduleUpdate(id: ID!, input: ProjectStageScheduleInputUpdate!): MutationResponse!
+  "delete a project stage schedule"
+  projectStageScheduleDelete(id: ID!): MutationResponse!
+}

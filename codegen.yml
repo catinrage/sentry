@@ -4,6 +4,7 @@ generates:
   './src/modules/':
     config:
       contextType: ./context#Context
+      inputMaybeValue: 'T | undefined'
     preset: 'graphql-modules'
     presetConfig:
       baseTypesPath: '../codegen/graphql.ts'

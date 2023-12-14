@@ -2,12 +2,13 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { Context } from './context';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type InputMaybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -19,6 +20,11 @@ export type Scalars = {
   Date: { input: any; output: any; }
   DateTime: { input: any; output: any; }
   Object: { input: any; output: any; }
+};
+
+export type BadInputErrorExtension = {
+  __typename?: 'BadInputErrorExtension';
+  path?: Maybe<Array<Scalars['String']['output']>>;
 };
 
 /** a client is a person, a company or an organization */
@@ -52,7 +58,7 @@ export type Error = {
   /** error code (ErrorCodeEnum) */
   code: ErrorCodeEnum;
   /** contains extra data about the error */
-  extension?: Maybe<Scalars['Object']['output']>;
+  extension?: Maybe<ErrorExtension>;
   /** error message */
   message: Scalars['String']['output'];
 };
@@ -61,40 +67,45 @@ export type Error = {
 export type ErrorCodeEnum =
   | 'ACCESS_DENIED'
   | 'BAD_INPUT'
+  | 'DB_ERROR'
   | 'UNKNOWN_ERROR';
 
-/**  a cnc machine  */
+export type ErrorExtension = BadInputErrorExtension | DefaultErrorExtension;
+
+/** a cnc machine */
 export type Machine = {
   __typename?: 'Machine';
-  /**  indicates if the machine is currently available  */
+  /** indicates if the machine is currently available */
   available: Scalars['Boolean']['output'];
   createdAt: Scalars['DateTime']['output'];
-  /**  the unique identifier, also used as the primary key  */
+  /** the unique identifier, also used as the primary key */
   id: Scalars['ID']['output'];
-  /**  the name of the machine  */
+  /** the name of the machine */
   name: Scalars['String']['output'];
-  /**  type of the machine */
+  /** schedules for this machine */
+  schedules?: Maybe<Array<ProjectStageSchedule>>;
+  /** type of the machine */
   type: MachineTypeEnum;
   updatedAt: Scalars['DateTime']['output'];
 };
 
-/**  input fields to create a new machine  */
+/** input fields to create a new machine */
 export type MachineInputCreate = {
-  /**  indicates if the machine is currently available  */
-  available: Scalars['Boolean']['input'];
-  /**  the name of the machine  */
+  /** indicates if the machine is currently available */
+  available?: InputMaybe<Scalars['Boolean']['input']>;
+  /** the name of the machine */
   name: Scalars['String']['input'];
-  /**  type of the machine */
+  /** type of the machine */
   type: MachineTypeEnum;
 };
 
-/**  input fields to update an existing machine  */
+/** input fields to update an existing machine */
 export type MachineInputUpdate = {
-  /**  indicates if the machine is currently available  */
+  /** indicates if the machine is currently available */
   available?: InputMaybe<Scalars['Boolean']['input']>;
-  /**  the name of the machine  */
+  /** the name of the machine */
   name?: InputMaybe<Scalars['String']['input']>;
-  /**  type of the machine */
+  /** type of the machine */
   type?: InputMaybe<MachineTypeEnum>;
 };
 
@@ -115,17 +126,31 @@ export type Mutation = {
   clientDelete: MutationResponse;
   /** updates an existing client */
   clientUpdate: MutationResponse;
-  /**  creates a new machine  */
+  /** creates a new machine */
   machineCreate: MutationResponse;
-  /**  deletes an machine  */
+  /** deletes an machine */
   machineDelete: MutationResponse;
-  /**  updates an existing machine  */
+  /** updates an existing machine */
   machineUpdate: MutationResponse;
-  /**  creates a new project  */
+  /** creates a new project */
   projectCreate: MutationResponse;
-  /**  deletes an project  */
+  /** deletes an project */
   projectDelete: MutationResponse;
-  /**  updates an existing project  */
+  /** reorder stages in a project */
+  projectReorderStages: MutationResponse;
+  /** create a project stage */
+  projectStageCreate: MutationResponse;
+  /** delete a project stage */
+  projectStageDelete: MutationResponse;
+  /** create a project stage schedule */
+  projectStageScheduleCreate: MutationResponse;
+  /** delete a project stage schedule */
+  projectStageScheduleDelete: MutationResponse;
+  /** update a project stage schedule */
+  projectStageScheduleUpdate: MutationResponse;
+  /** update a project stage */
+  projectStageUpdate: MutationResponse;
+  /** updates an existing project */
   projectUpdate: MutationResponse;
 };
 
@@ -181,6 +206,50 @@ export type MutationProjectDeleteArgs = {
 
 
 /** graphql Mutation root */
+export type MutationProjectReorderStagesArgs = {
+  projectId: Scalars['ID']['input'];
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageCreateArgs = {
+  input: ProjectStageInputCreate;
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageScheduleCreateArgs = {
+  input: ProjectStageScheduleInputCreate;
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageScheduleDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageScheduleUpdateArgs = {
+  id: Scalars['ID']['input'];
+  input: ProjectStageScheduleInputUpdate;
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageUpdateArgs = {
+  id: Scalars['ID']['input'];
+  input: ProjectStageInputUpdate;
+};
+
+
+/** graphql Mutation root */
 export type MutationProjectUpdateArgs = {
   id: Scalars['ID']['input'];
   input: ProjectInputUpdate;
@@ -197,61 +266,249 @@ export type MutationResponse = {
   success: Scalars['Boolean']['output'];
 };
 
-/**  a project  */
+/** project type */
 export type Project = {
   __typename?: 'Project';
   /** project's client */
   client: Client;
-  /**  code associated with the project  */
+  /** code associated with the project */
   code: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
-  /**  project's due date */
+  /** project's due date */
   dueDate?: Maybe<Scalars['DateTime']['output']>;
-  /**  fee for each part  */
+  /** fee for each part */
   fee?: Maybe<Scalars['Int']['output']>;
-  /**  the unique identifier, also used as the primary key  */
+  /** the unique identifier, also used as the primary key */
   id: Scalars['ID']['output'];
-  /**  quantity of the parts that must be processed  */
+  /** quantity of the parts that must be processed */
   quantity: Scalars['Int']['output'];
-  /**  project's title  */
+  /** stages for this project */
+  stages?: Maybe<Array<ProjectStage>>;
+  /** project's title */
   title: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
 
-/**  input fields to create a new project  */
+/** input fields to create a new project */
 export type ProjectInputCreate = {
   /** project's client's id */
   clientId: Scalars['String']['input'];
-  /**  code associated with the project  */
+  /** code associated with the project */
   code: Scalars['String']['input'];
-  /**  project's due date */
+  /** project's due date */
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  /**  fee for each part  */
+  /** fee for each part */
   fee?: InputMaybe<Scalars['Int']['input']>;
-  /**  quantity of the parts that must be processed  */
+  /** quantity of the parts that must be processed */
   quantity: Scalars['Int']['input'];
-  /**  project's title  */
+  /** project's title */
   title: Scalars['String']['input'];
 };
 
-/**  input fields to update an existing project  */
+/** input fields to update an existing project */
 export type ProjectInputUpdate = {
-  /** project's new client's id */
+  /** project's client's id */
   clientId?: InputMaybe<Scalars['String']['input']>;
-  /**  code associated with the project  */
+  /** code associated with the project */
   code?: InputMaybe<Scalars['String']['input']>;
-  /**  project's due date */
+  /** project's due date */
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  /**  fee for each part  */
+  /** fee for each part */
   fee?: InputMaybe<Scalars['Int']['input']>;
-  /**  quantity of the parts that must be processed  */
+  /** quantity of the parts that must be processed */
   quantity?: InputMaybe<Scalars['Int']['input']>;
-  /**  project's title  */
+  /** project's title */
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-/**  enum for project state  */
-export type ProjectStageStateEnum =
+/** a stage for project */
+export type ProjectStage = {
+  __typename?: 'ProjectStage';
+  createdAt: Scalars['DateTime']['output'];
+  /** default schedule metadata for this stage, each schedule for this stage should be based on this initially */
+  defaultMetadata?: Maybe<ProjectStageScheduleMetadata>;
+  /** the unique identifier */
+  id: Scalars['ID']['output'];
+  /** determines the number of the stage */
+  number: Scalars['Int']['output'];
+  /** project that this stage belongs to */
+  project: Project;
+  /** schedules for this stage */
+  schedules?: Maybe<Array<ProjectStageSchedule>>;
+  /** title for this stage */
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+/**  input fields to create a new project stage  */
+export type ProjectStageInputCreate = {
+  /** default schedule metadata for this stage, each schedule for this stage should be based on this initially */
+  defaultMetadata: ProjectStageScheduleMetadataInputCreate;
+  /** project's id that this stage belongs to */
+  projectId: Scalars['String']['input'];
+  /** title for this stage */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/**  input fields to update an existing project stage  */
+export type ProjectStageInputUpdate = {
+  /** default schedule metadata for this stage, each schedule for this stage should be based on this initially */
+  defaultMetadata?: InputMaybe<ProjectStageScheduleMetadataInputUpdate>;
+  /** title for this stage */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** a schedule for a project stage */
+export type ProjectStageSchedule = {
+  __typename?: 'ProjectStageSchedule';
+  createdAt: Scalars['DateTime']['output'];
+  /** actual date when the schedule has ended */
+  dateEndActual?: Maybe<Scalars['DateTime']['output']>;
+  /** estimated date when the schedule ends */
+  dateEndEstimated?: Maybe<Scalars['DateTime']['output']>;
+  /** date when the schedule starts */
+  dateStart?: Maybe<Scalars['DateTime']['output']>;
+  /** the unique identifier */
+  id: Scalars['ID']['output'];
+  /** list of interruptions in the schedule */
+  interruptions: Array<ProjectStageScheduleInterruption>;
+  /** the machine that is being used for this stage schedule */
+  machine: Machine;
+  /** metadata for this specific schedule */
+  metadata?: Maybe<ProjectStageScheduleMetadata>;
+  /** next schedule */
+  next?: Maybe<ProjectStageSchedule>;
+  /** previous schedule */
+  previous?: Maybe<ProjectStageSchedule>;
+  /** the quantity that will be processed in this schedule */
+  quantity: Scalars['Int']['output'];
+  /** the stage for this schedule */
+  stage: ProjectStage;
+  /** the state of the schedule */
+  state: ProjectStageScheduleStateEnum;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ProjectStageScheduleInputCreate = {
+  /** date when the schedule ends */
+  dateEnd?: InputMaybe<Scalars['DateTime']['input']>;
+  /** date when the schedule starts */
+  dateStart?: InputMaybe<Scalars['DateTime']['input']>;
+  /** the machine that is being used for this stage schedule */
+  machineId: Scalars['ID']['input'];
+  /** metadata for this specific schedule */
+  metadata: ProjectStageScheduleMetadataInputCreate;
+  /** id for the previous schedule */
+  previousId?: InputMaybe<Scalars['ID']['input']>;
+  /** the quantity that will be processed in this schedule */
+  quantity: Scalars['Int']['input'];
+  /** the stage for this schedule */
+  stageId: Scalars['ID']['input'];
+  /** the state of the schedule */
+  state?: InputMaybe<ProjectStageScheduleStateEnum>;
+};
+
+export type ProjectStageScheduleInputUpdate = {
+  /** date when the schedule ends */
+  dateEnd?: InputMaybe<Scalars['DateTime']['input']>;
+  /** date when the schedule starts */
+  dateStart?: InputMaybe<Scalars['DateTime']['input']>;
+  /** the machine that is being used for this stage schedule */
+  machineId?: InputMaybe<Scalars['ID']['input']>;
+  /** metadata for this specific schedule */
+  metadata?: InputMaybe<ProjectStageScheduleMetadataInputUpdate>;
+  /** id for the previous schedule */
+  previousId?: InputMaybe<Scalars['ID']['input']>;
+  /** the quantity that will be processed in this schedule */
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  /** the state of the schedule */
+  state?: InputMaybe<ProjectStageScheduleStateEnum>;
+};
+
+/** a interruption in the schedule of a stage */
+export type ProjectStageScheduleInterruption = {
+  __typename?: 'ProjectStageScheduleInterruption';
+  /** date when the schedule ends */
+  dateEnd: Scalars['DateTime']['output'];
+  /** date when the schedule starts */
+  dateStart: Scalars['DateTime']['output'];
+  /** the unique identifier */
+  id: Scalars['ID']['output'];
+  /** reason for the interruption */
+  reason: Scalars['String']['output'];
+};
+
+export type ProjectStageScheduleInterruptionInputCreate = {
+  /** date when the schedule ends */
+  dateEnd: Scalars['DateTime']['input'];
+  /** date when the schedule starts */
+  dateStart: Scalars['DateTime']['input'];
+  /** schedule that this interruption belongs to */
+  projectStageScheduleId: Scalars['ID']['input'];
+  /** reason for the interruption */
+  reason: Scalars['String']['input'];
+};
+
+export type ProjectStageScheduleInterruptionInputUpdate = {
+  /** date when the schedule ends */
+  dateEnd?: InputMaybe<Scalars['DateTime']['input']>;
+  /** date when the schedule starts */
+  dateStart?: InputMaybe<Scalars['DateTime']['input']>;
+  /** reason for the interruption */
+  reason?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** contains some metadata about the schedule of a project stage */
+export type ProjectStageScheduleMetadata = {
+  __typename?: 'ProjectStageScheduleMetadata';
+  /** execution duration in minutes */
+  durationExecution: Scalars['Int']['output'];
+  /** preparation duration before each execution in minutes */
+  durationPreparation: Scalars['Int']['output'];
+  /** initial setup duration in minutes */
+  durationSetup: Scalars['Int']['output'];
+  /** estimated efficiency of the schedule (between 0 and 1) */
+  efficiencyEstimated: Scalars['Float']['output'];
+  /** a unique identifier */
+  id: Scalars['ID']['output'];
+  /** how many output parts are produced per execution */
+  numberOfOutputParts: Scalars['Int']['output'];
+  /** how many setups are required to produce all output parts */
+  numberOfSetups: Scalars['Int']['output'];
+};
+
+export type ProjectStageScheduleMetadataInputCreate = {
+  /** execution duration in minutes */
+  durationExecution: Scalars['Int']['input'];
+  /** preparation duration before each execution in minutes */
+  durationPreparation: Scalars['Int']['input'];
+  /** initial setup duration in minutes */
+  durationSetup: Scalars['Int']['input'];
+  /** estimated efficiency of the schedule (between 0 and 1) */
+  efficiencyEstimated: Scalars['Float']['input'];
+  /** how many output parts are produced per execution */
+  numberOfOutputParts: Scalars['Int']['input'];
+  /** how many setups are required to produce all output parts */
+  numberOfSetups: Scalars['Int']['input'];
+};
+
+export type ProjectStageScheduleMetadataInputUpdate = {
+  /** execution duration in minutes */
+  durationExecution: Scalars['Int']['input'];
+  /** preparation duration before each execution in minutes */
+  durationPreparation: Scalars['Int']['input'];
+  /** initial setup duration in minutes */
+  durationSetup: Scalars['Int']['input'];
+  /** estimated efficiency of the schedule (between 0 and 1) */
+  efficiencyEstimated: Scalars['Float']['input'];
+  /** how many output parts are produced per execution */
+  numberOfOutputParts: Scalars['Int']['input'];
+  /** how many setups are required to produce all output parts */
+  numberOfSetups: Scalars['Int']['input'];
+};
+
+/** enum for project state schedule state */
+export type ProjectStageScheduleStateEnum =
   | 'COMPLETED'
   | 'IN_PROGRESS'
   | 'PAUSED'
@@ -264,15 +521,15 @@ export type Query = {
   client?: Maybe<Client>;
   /** returns a list of clients */
   clients: Array<Client>;
-  /**  returns a machine given its unique identifier  */
+  /** returns a machine given its unique identifier */
   machine?: Maybe<Machine>;
-  /**  returns a list of machines  */
+  /** returns a list of machines */
   machines: Array<Machine>;
   /** lets play ping pong */
   ping: Scalars['String']['output'];
-  /**  returns a project given its unique identifier  */
+  /** returns a project given its unique identifier */
   project?: Maybe<Project>;
-  /**  returns a list of projects  */
+  /** returns a list of projects */
   projects: Array<Project>;
 };
 
@@ -292,6 +549,11 @@ export type QueryMachineArgs = {
 /** graphql Query root */
 export type QueryProjectArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type DefaultErrorExtension = {
+  __typename?: 'defaultErrorExtension';
+  _empty?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -361,18 +623,25 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+/** Mapping of union types */
+export type ResolversUnionTypes<RefType extends Record<string, unknown>> = {
+  ErrorExtension: ( BadInputErrorExtension ) | ( DefaultErrorExtension );
+};
 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  BadInputErrorExtension: ResolverTypeWrapper<BadInputErrorExtension>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Client: ResolverTypeWrapper<Client>;
   ClientInputCreate: ClientInputCreate;
   ClientInputUpdate: ClientInputUpdate;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  Error: ResolverTypeWrapper<Error>;
+  Error: ResolverTypeWrapper<Omit<Error, 'extension'> & { extension?: Maybe<ResolversTypes['ErrorExtension']> }>;
   ErrorCodeEnum: ErrorCodeEnum;
+  ErrorExtension: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ErrorExtension']>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Machine: ResolverTypeWrapper<Machine>;
@@ -385,20 +654,36 @@ export type ResolversTypes = {
   Project: ResolverTypeWrapper<Project>;
   ProjectInputCreate: ProjectInputCreate;
   ProjectInputUpdate: ProjectInputUpdate;
-  ProjectStageStateEnum: ProjectStageStateEnum;
+  ProjectStage: ResolverTypeWrapper<ProjectStage>;
+  ProjectStageInputCreate: ProjectStageInputCreate;
+  ProjectStageInputUpdate: ProjectStageInputUpdate;
+  ProjectStageSchedule: ResolverTypeWrapper<ProjectStageSchedule>;
+  ProjectStageScheduleInputCreate: ProjectStageScheduleInputCreate;
+  ProjectStageScheduleInputUpdate: ProjectStageScheduleInputUpdate;
+  ProjectStageScheduleInterruption: ResolverTypeWrapper<ProjectStageScheduleInterruption>;
+  ProjectStageScheduleInterruptionInputCreate: ProjectStageScheduleInterruptionInputCreate;
+  ProjectStageScheduleInterruptionInputUpdate: ProjectStageScheduleInterruptionInputUpdate;
+  ProjectStageScheduleMetadata: ResolverTypeWrapper<ProjectStageScheduleMetadata>;
+  ProjectStageScheduleMetadataInputCreate: ProjectStageScheduleMetadataInputCreate;
+  ProjectStageScheduleMetadataInputUpdate: ProjectStageScheduleMetadataInputUpdate;
+  ProjectStageScheduleStateEnum: ProjectStageScheduleStateEnum;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  defaultErrorExtension: ResolverTypeWrapper<DefaultErrorExtension>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  BadInputErrorExtension: BadInputErrorExtension;
   Boolean: Scalars['Boolean']['output'];
   Client: Client;
   ClientInputCreate: ClientInputCreate;
   ClientInputUpdate: ClientInputUpdate;
   Date: Scalars['Date']['output'];
   DateTime: Scalars['DateTime']['output'];
-  Error: Error;
+  Error: Omit<Error, 'extension'> & { extension?: Maybe<ResolversParentTypes['ErrorExtension']> };
+  ErrorExtension: ResolversUnionTypes<ResolversParentTypes>['ErrorExtension'];
+  Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Machine: Machine;
@@ -410,8 +695,26 @@ export type ResolversParentTypes = {
   Project: Project;
   ProjectInputCreate: ProjectInputCreate;
   ProjectInputUpdate: ProjectInputUpdate;
+  ProjectStage: ProjectStage;
+  ProjectStageInputCreate: ProjectStageInputCreate;
+  ProjectStageInputUpdate: ProjectStageInputUpdate;
+  ProjectStageSchedule: ProjectStageSchedule;
+  ProjectStageScheduleInputCreate: ProjectStageScheduleInputCreate;
+  ProjectStageScheduleInputUpdate: ProjectStageScheduleInputUpdate;
+  ProjectStageScheduleInterruption: ProjectStageScheduleInterruption;
+  ProjectStageScheduleInterruptionInputCreate: ProjectStageScheduleInterruptionInputCreate;
+  ProjectStageScheduleInterruptionInputUpdate: ProjectStageScheduleInterruptionInputUpdate;
+  ProjectStageScheduleMetadata: ProjectStageScheduleMetadata;
+  ProjectStageScheduleMetadataInputCreate: ProjectStageScheduleMetadataInputCreate;
+  ProjectStageScheduleMetadataInputUpdate: ProjectStageScheduleMetadataInputUpdate;
   Query: {};
   String: Scalars['String']['output'];
+  defaultErrorExtension: DefaultErrorExtension;
+};
+
+export type BadInputErrorExtensionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BadInputErrorExtension'] = ResolversParentTypes['BadInputErrorExtension']> = {
+  path?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ClientResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Client'] = ResolversParentTypes['Client']> = {
@@ -433,9 +736,13 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type ErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
   code?: Resolver<ResolversTypes['ErrorCodeEnum'], ParentType, ContextType>;
-  extension?: Resolver<Maybe<ResolversTypes['Object']>, ParentType, ContextType>;
+  extension?: Resolver<Maybe<ResolversTypes['ErrorExtension']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ErrorExtensionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ErrorExtension'] = ResolversParentTypes['ErrorExtension']> = {
+  __resolveType: TypeResolveFn<'BadInputErrorExtension' | 'defaultErrorExtension', ParentType, ContextType>;
 };
 
 export type MachineResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Machine'] = ResolversParentTypes['Machine']> = {
@@ -443,6 +750,7 @@ export type MachineResolvers<ContextType = Context, ParentType extends Resolvers
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  schedules?: Resolver<Maybe<Array<ResolversTypes['ProjectStageSchedule']>>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['MachineTypeEnum'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -458,6 +766,13 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   machineUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationMachineUpdateArgs, 'id' | 'input'>>;
   projectCreate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectCreateArgs, 'input'>>;
   projectDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectDeleteArgs, 'id'>>;
+  projectReorderStages?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectReorderStagesArgs, 'projectId'>>;
+  projectStageCreate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageCreateArgs, 'input'>>;
+  projectStageDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageDeleteArgs, 'id'>>;
+  projectStageScheduleCreate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleCreateArgs, 'input'>>;
+  projectStageScheduleDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleDeleteArgs, 'id'>>;
+  projectStageScheduleUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleUpdateArgs, 'id' | 'input'>>;
+  projectStageUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageUpdateArgs, 'id' | 'input'>>;
   projectUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectUpdateArgs, 'id' | 'input'>>;
 };
 
@@ -480,8 +795,58 @@ export type ProjectResolvers<ContextType = Context, ParentType extends Resolvers
   fee?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  stages?: Resolver<Maybe<Array<ResolversTypes['ProjectStage']>>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectStageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProjectStage'] = ResolversParentTypes['ProjectStage']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  defaultMetadata?: Resolver<Maybe<ResolversTypes['ProjectStageScheduleMetadata']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
+  schedules?: Resolver<Maybe<Array<ResolversTypes['ProjectStageSchedule']>>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectStageScheduleResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProjectStageSchedule'] = ResolversParentTypes['ProjectStageSchedule']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dateEndActual?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dateEndEstimated?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dateStart?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  interruptions?: Resolver<Array<ResolversTypes['ProjectStageScheduleInterruption']>, ParentType, ContextType>;
+  machine?: Resolver<ResolversTypes['Machine'], ParentType, ContextType>;
+  metadata?: Resolver<Maybe<ResolversTypes['ProjectStageScheduleMetadata']>, ParentType, ContextType>;
+  next?: Resolver<Maybe<ResolversTypes['ProjectStageSchedule']>, ParentType, ContextType>;
+  previous?: Resolver<Maybe<ResolversTypes['ProjectStageSchedule']>, ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  stage?: Resolver<ResolversTypes['ProjectStage'], ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['ProjectStageScheduleStateEnum'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectStageScheduleInterruptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProjectStageScheduleInterruption'] = ResolversParentTypes['ProjectStageScheduleInterruption']> = {
+  dateEnd?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dateStart?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectStageScheduleMetadataResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProjectStageScheduleMetadata'] = ResolversParentTypes['ProjectStageScheduleMetadata']> = {
+  durationExecution?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  durationPreparation?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  durationSetup?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  efficiencyEstimated?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  numberOfOutputParts?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  numberOfSetups?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -495,17 +860,29 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   projects?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
 };
 
+export type DefaultErrorExtensionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['defaultErrorExtension'] = ResolversParentTypes['defaultErrorExtension']> = {
+  _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
+  BadInputErrorExtension?: BadInputErrorExtensionResolvers<ContextType>;
   Client?: ClientResolvers<ContextType>;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
+  ErrorExtension?: ErrorExtensionResolvers<ContextType>;
   Machine?: MachineResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
   Object?: GraphQLScalarType;
   Project?: ProjectResolvers<ContextType>;
+  ProjectStage?: ProjectStageResolvers<ContextType>;
+  ProjectStageSchedule?: ProjectStageScheduleResolvers<ContextType>;
+  ProjectStageScheduleInterruption?: ProjectStageScheduleInterruptionResolvers<ContextType>;
+  ProjectStageScheduleMetadata?: ProjectStageScheduleMetadataResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  defaultErrorExtension?: DefaultErrorExtensionResolvers<ContextType>;
 };
 
 
