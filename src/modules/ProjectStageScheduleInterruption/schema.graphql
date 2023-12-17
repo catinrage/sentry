@@ -34,3 +34,17 @@ input ProjectStageScheduleInterruptionInputUpdate {
   "reason for the interruption"
   reason: String
 }
+
+extend type Mutation {
+  "create a project stage schedule interruption"
+  projectStageScheduleInterruptionCreate(
+    input: ProjectStageScheduleInterruptionInputCreate!
+  ): MutationResponse!
+  "update a project stage schedule interruption"
+  projectStageScheduleInterruptionUpdate(
+    id: ID!
+    input: ProjectStageScheduleInterruptionInputUpdate!
+  ): MutationResponse!
+  "delete a project stage schedule interruption"
+  projectStageScheduleInterruptionDelete(id: ID!): MutationResponse!
+}

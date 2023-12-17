@@ -12,6 +12,8 @@ type Project {
   fee: Int
   "project's due date"
   dueDate: DateTime
+  "description for this project"
+  description: String
 
   "project's client"
   client: Client!
@@ -44,6 +46,8 @@ input ProjectInputCreate {
   fee: Int
   "project's due date"
   dueDate: DateTime
+  "description for this project"
+  description: String
 
   "project's client's id"
   clientId: String!
@@ -61,6 +65,8 @@ input ProjectInputUpdate {
   fee: Int
   "project's due date"
   dueDate: DateTime
+  "description for this project"
+  description: String
 
   "project's client's id"
   clientId: String

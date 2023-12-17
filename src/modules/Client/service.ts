@@ -3,7 +3,6 @@ import { errors } from '@helpers';
 import type { Prisma } from '@prisma/client';
 import { ClientInputCreate, ClientInputUpdate, MutationResponse } from 'src/codegen/graphql';
 import { validateClientCreate, validateClientUpdate, validateClientDelete } from './validator';
-import { ProjectService } from '../Project/service';
 
 export class ClientService {
   static async create(data: ClientInputCreate): Promise<MutationResponse> {

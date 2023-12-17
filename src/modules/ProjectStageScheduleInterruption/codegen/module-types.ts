@@ -4,6 +4,7 @@ import * as gm from "graphql-modules";
 export namespace ProjectStageScheduleInterruptionModule {
   interface DefinedFields {
     ProjectStageScheduleInterruption: 'id' | 'dateStart' | 'dateEnd' | 'reason';
+    Mutation: 'projectStageScheduleInterruptionCreate' | 'projectStageScheduleInterruptionUpdate' | 'projectStageScheduleInterruptionDelete';
     ProjectStageSchedule: 'interruptions';
   };
   
@@ -17,12 +18,16 @@ export namespace ProjectStageScheduleInterruptionModule {
   export type ProjectStageSchedule = Types.ProjectStageSchedule;
   export type ProjectStageScheduleInterruptionInputCreate = Pick<Types.ProjectStageScheduleInterruptionInputCreate, DefinedInputFields['ProjectStageScheduleInterruptionInputCreate']>;
   export type ProjectStageScheduleInterruptionInputUpdate = Pick<Types.ProjectStageScheduleInterruptionInputUpdate, DefinedInputFields['ProjectStageScheduleInterruptionInputUpdate']>;
+  export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
+  export type MutationResponse = Types.MutationResponse;
   
   export type ProjectStageScheduleInterruptionResolvers = Pick<Types.ProjectStageScheduleInterruptionResolvers, DefinedFields['ProjectStageScheduleInterruption'] | '__isTypeOf'>;
+  export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
   export type ProjectStageScheduleResolvers = Pick<Types.ProjectStageScheduleResolvers, DefinedFields['ProjectStageSchedule']>;
   
   export interface Resolvers {
     ProjectStageScheduleInterruption?: ProjectStageScheduleInterruptionResolvers;
+    Mutation?: MutationResolvers;
     ProjectStageSchedule?: ProjectStageScheduleResolvers;
   };
   
@@ -40,6 +45,12 @@ export namespace ProjectStageScheduleInterruptionModule {
     ProjectStageSchedule?: {
       '*'?: gm.Middleware[];
       interruptions?: gm.Middleware[];
+    };
+    Mutation?: {
+      '*'?: gm.Middleware[];
+      projectStageScheduleInterruptionCreate?: gm.Middleware[];
+      projectStageScheduleInterruptionUpdate?: gm.Middleware[];
+      projectStageScheduleInterruptionDelete?: gm.Middleware[];
     };
   };
 }

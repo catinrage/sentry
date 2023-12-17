@@ -63,15 +63,15 @@ input ProjectStageScheduleMetadataInputCreate {
 
 input ProjectStageScheduleMetadataInputUpdate {
   "initial setup duration in minutes"
-  durationSetup: Int!
+  durationSetup: Int
   "preparation duration before each execution in minutes"
-  durationPreparation: Int!
+  durationPreparation: Int
   "execution duration in minutes"
-  durationExecution: Int!
+  durationExecution: Int
   "how many output parts are produced per execution"
-  numberOfOutputParts: Int!
+  numberOfOutputParts: Int
   "how many setups are required to produce all output parts"
-  numberOfSetups: Int!
+  numberOfSetups: Int
   "estimated efficiency of the schedule (between 0 and 1)"
-  efficiencyEstimated: Float!
+  efficiencyEstimated: Float
 }

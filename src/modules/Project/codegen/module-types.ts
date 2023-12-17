@@ -3,15 +3,15 @@ import * as Types from "../../../codegen/graphql";
 import * as gm from "graphql-modules";
 export namespace ProjectModule {
   interface DefinedFields {
-    Project: 'id' | 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'client' | 'createdAt' | 'updatedAt';
+    Project: 'id' | 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'description' | 'client' | 'createdAt' | 'updatedAt';
     Query: 'project' | 'projects';
     Mutation: 'projectCreate' | 'projectUpdate' | 'projectDelete';
     Client: 'projects';
   };
   
   interface DefinedInputFields {
-    ProjectInputCreate: 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'clientId';
-    ProjectInputUpdate: 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'clientId';
+    ProjectInputCreate: 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'description' | 'clientId';
+    ProjectInputUpdate: 'code' | 'title' | 'quantity' | 'fee' | 'dueDate' | 'description' | 'clientId';
   };
   
   export type Project = Pick<Types.Project, DefinedFields['Project']>;
@@ -47,6 +47,7 @@ export namespace ProjectModule {
       quantity?: gm.Middleware[];
       fee?: gm.Middleware[];
       dueDate?: gm.Middleware[];
+      description?: gm.Middleware[];
       client?: gm.Middleware[];
       createdAt?: gm.Middleware[];
       updatedAt?: gm.Middleware[];

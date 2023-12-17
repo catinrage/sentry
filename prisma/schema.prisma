@@ -35,13 +35,14 @@ model Machine {
 }
 
 model Project {
-  id       String    @id @default(cuid())
-  code     String    @unique
-  title    String
-  clientId String
-  quantity Int
-  fee      Int?
-  dueDate  DateTime?
+  id          String    @id @default(cuid())
+  code        String    @unique
+  title       String
+  clientId    String
+  quantity    Int
+  fee         Int?
+  dueDate     DateTime?
+  description String    @default("")
 
   client Client         @relation(fields: [clientId], references: [id], onDelete: Restrict)
   stages ProjectStage[]
@@ -68,16 +69,16 @@ model ProjectStageSchedule {
   id               String                        @id @default(cuid())
   machineId        String
   stageId          String
-  dateStart        DateTime?
-  dateEndEstimated DateTime?
+  dateStartFixed   DateTime?
+  previousId       String?                       @unique
+  dateEndEstimated DateTime
   dateEndActual    DateTime?
   quantity         Int
   state            ProjectStageScheduleStateEnum @default(PENDING)
-  previousId       String?                       @unique
 
   machine       Machine                            @relation(fields: [machineId], references: [id], onDelete: Restrict)
   metadata      ProjectStageScheduleMetadata?
-  previous      ProjectStageSchedule?              @relation(name: "chain", fields: [previousId], references: [id], onDelete: SetDefault)
+  previous      ProjectStageSchedule?              @relation(name: "chain", fields: [previousId], references: [id], onDelete: SetNull)
   next          ProjectStageSchedule?              @relation(name: "chain")
   interruptions ProjectStageScheduleInterruption[]
   stage         ProjectStage                       @relation(fields: [stageId], references: [id], onDelete: Restrict)

@@ -1,7 +1,10 @@
 import { z as zod } from 'zod';
 import { prisma } from '@providers';
 import { ProjectStageScheduleService, MachineService, ProjectStageService } from '@services';
-import { validateProjectStageScheduleMetadataCreate } from '../ProjectStageScheduleMetadata/validator';
+import {
+  validateProjectStageScheduleMetadataCreate,
+  validateProjectStageScheduleMetadataUpdate,
+} from '../ProjectStageScheduleMetadata/validator';
 import { ProjectStageScheduleStateEnum } from '@prisma/client';
 
 const validateProjectStageScheduleBase = zod.object({
@@ -31,7 +34,7 @@ const validateProjectStageScheduleBase = zod.object({
       errorMap: () => ({ message: 'وضعیت زمانبندی معتبر نیست' }),
     })
     .optional(),
-  dateStart: zod.date().optional(),
+  dateStartFixed: zod.date().optional(),
   previousId: zod
     .string()
     .refine(
@@ -49,7 +52,7 @@ const validateProjectStageScheduleBase = zod.object({
         return !(await ProjectStageScheduleService.next(previousId));
       },
       {
-        message: 'در حال حاضر یک زمانبندی بعدی برای این زمانبندی وجود دارد',
+        message: 'در حال حاضر یک زمانبندی بعدی برای زمانبندی قبلی انتخاب شده وجود دارد',
       },
     )
     .optional(),
@@ -88,19 +91,125 @@ export const validateProjectStageScheduleCreate = validateProjectStageScheduleBa
         path: ['quantity'],
       });
     }
-    if (!args.dateStart && !args.previousId) {
+    if (!args.dateStartFixed && !args.previousId) {
       ctx.addIssue({
         code: 'custom',
-        message: 'تاریخ شروع یا زمانبندی قبلی اجباری می باشد',
-        path: ['dateStart'],
+        message: 'یکی از مقادیر تاریخ شروع و یا زمانبندی قبلی باید انتخاب شود',
+        path: ['dateStartFixed'],
+      });
+      ctx.addIssue({
+        code: 'custom',
+        message: 'یکی از مقادیر تاریخ شروع و یا زمانبندی قبلی باید انتخاب شود',
+        path: ['previousId'],
       });
     }
-    if (args.dateStart && args.previousId) {
+    if (args.dateStartFixed && args.previousId) {
       ctx.addIssue({
         code: 'custom',
-        message: 'هردوی تاریخ شروع و زمانبندی قبلی قابل انتخاب نیستند',
-        path: ['dateStart'],
+        message: 'انتخاب همزمان تاریخ شروع و زمانبندی قبلی ممکن نیست',
+        path: ['dateStartFixed'],
+      });
+      ctx.addIssue({
+        code: 'custom',
+        message: 'انتخاب همزمان تاریخ شروع و زمانبندی قبلی ممکن نیست',
+        path: ['previousId'],
       });
     }
   },
 );
+
+export const validateProjectStageScheduleUpdate = zod
+  .object({
+    id: zod.string().refine(
+      async (id) => {
+        return await ProjectStageScheduleService.exists({
+          id,
+        });
+      },
+      {
+        message: 'زمانبندی مورد نظر یافت نشد',
+      },
+    ),
+    data: validateProjectStageScheduleBase
+      .extend({
+        metadata: validateProjectStageScheduleMetadataUpdate,
+      })
+      .partial()
+
+      .superRefine(async (args, ctx) => {
+        if (args.dateStartFixed && args.previousId) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'انتخاب همزمان تاریخ شروع و زمانبندی قبلی ممکن نیست',
+            path: args.dateStartFixed ? ['dateStartFixed'] : ['previousId'],
+          });
+        }
+      }),
+  })
+  .superRefine(async (args, ctx) => {
+    if (args.data.quantity) {
+      const projectStage = await prisma.projectStageSchedule
+        .findUnique({
+          where: {
+            id: args.id,
+          },
+        })
+        .stage();
+      if (!projectStage) return;
+      const alreadyScheduledPartsForThisStage =
+        (
+          await prisma.projectStageSchedule.aggregate({
+            where: {
+              stageId: args.data.stageId || projectStage.id,
+            },
+            _sum: {
+              quantity: true,
+            },
+          })
+        )._sum.quantity || 0;
+      const project = await prisma.projectStage
+        .findUnique({
+          where: {
+            id: args.data.stageId || projectStage.id,
+          },
+        })
+        .project();
+      if (!project) return;
+
+      const totalPartsForThisStage = project.quantity;
+      const remainingPartsForThisStage = totalPartsForThisStage - alreadyScheduledPartsForThisStage;
+
+      if (remainingPartsForThisStage < args.data.quantity) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `تعداد قطعات زمانبندی نشده برای این مرحله ${remainingPartsForThisStage} عدد می باشد`,
+          path: ['quantity'],
+        });
+      }
+    }
+    if (args.data.dateStartFixed || args.data.previousId) {
+      if (
+        (await ProjectStageScheduleService.isCompleted(args.id)) ||
+        (await ProjectStageScheduleService.isInProgress(args.id))
+      ) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'امکان تغییر زمان شروع برای زمانبندی های در حال انجام یا تمام شده وجود ندارد',
+          path: ['dateStartFixed'],
+        });
+      }
+    }
+  });
+
+export const validateProjectStageScheduleDelete = zod.object({
+  id: zod.string().refine(
+    async (id) => {
+      return await ProjectStageScheduleService.exists({
+        id,
+      });
+    },
+    {
+      message: 'زمانبندی مورد نظر یافت نشد',
+    },
+  ),
+});

@@ -1,6 +1,9 @@
 import { z as zod } from 'zod';
 import { ProjectStageService, ProjectService } from '@services';
-import { validateProjectStageScheduleMetadataCreate } from '../ProjectStageScheduleMetadata/validator';
+import {
+  validateProjectStageScheduleMetadataCreate,
+  validateProjectStageScheduleMetadataUpdate,
+} from '../ProjectStageScheduleMetadata/validator';
 
 export const validateProjectStageCreate = zod.object({
   projectId: zod.string().refine(
@@ -28,7 +31,11 @@ export const validateProjectStageUpdate = zod.object({
       message: 'مرحله ی مورد نظر یافت نشد',
     },
   ),
-  data: validateProjectStageCreate.partial(),
+  data: validateProjectStageCreate
+    .extend({
+      defaultMetadata: validateProjectStageScheduleMetadataUpdate,
+    })
+    .partial(),
 });
 
 export const validateProjectStageDelete = zod.object({

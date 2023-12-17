@@ -48,6 +48,9 @@ export const validateProjectCreate = zod.object({
     .min(1, { message: 'تعداد پروژه باید حداقل 1 عدد باشد' })
     .max(10000000, { message: 'تعداد پروژه باید حداکثر 10000000 عدد باشد' })
     .int({ message: 'تعداد پروژه باید عدد صحیح باشد' }),
+  fee: zod.number().min(1, { message: 'مبلغ هر محصوول باید حداقل 1 ریال باشد' }).optional(),
+  dueDate: zod.date().optional(),
+  description: zod.string().max(2048, { message: 'توضیحات پروژه بیش از حد طولانی است' }).optional(),
 });
 
 export const validateProjectUpdate = zod.object({

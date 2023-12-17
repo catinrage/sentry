@@ -2,12 +2,16 @@
 type ProjectStageSchedule {
   "the unique identifier"
   id: ID!
-  "date when the schedule starts"
+  "fixed date when the schedule starts"
+  dateStartFixed: DateTime
+  "start date of the schedule"
   dateStart: DateTime
   "estimated date when the schedule ends"
   dateEndEstimated: DateTime
   "actual date when the schedule has ended"
   dateEndActual: DateTime
+  "end date of the schedule (its either the estimated or the actual)"
+  dateEnd: DateTime
   "the quantity that will be processed in this schedule"
   quantity: Int!
   "the state of the schedule"
@@ -37,10 +41,8 @@ extend type ProjectStage {
 }
 
 input ProjectStageScheduleInputCreate {
-  "date when the schedule starts"
-  dateStart: DateTime
-  "date when the schedule ends"
-  dateEnd: DateTime
+  "fixed date when the schedule starts"
+  dateStartFixed: DateTime
   "the quantity that will be processed in this schedule"
   quantity: Int!
   "the state of the schedule"
@@ -55,10 +57,8 @@ input ProjectStageScheduleInputCreate {
 }
 
 input ProjectStageScheduleInputUpdate {
-  "date when the schedule starts"
-  dateStart: DateTime
-  "date when the schedule ends"
-  dateEnd: DateTime
+  "fixed date when the schedule starts"
+  dateStartFixed: DateTime
   "the quantity that will be processed in this schedule"
   quantity: Int
   "the state of the schedule"

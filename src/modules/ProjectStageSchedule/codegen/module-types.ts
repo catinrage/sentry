@@ -3,7 +3,7 @@ import * as Types from "../../../codegen/graphql";
 import * as gm from "graphql-modules";
 export namespace ProjectStageScheduleModule {
   interface DefinedFields {
-    ProjectStageSchedule: 'id' | 'dateStart' | 'dateEndEstimated' | 'dateEndActual' | 'quantity' | 'state' | 'next' | 'previous' | 'machine' | 'stage' | 'createdAt' | 'updatedAt';
+    ProjectStageSchedule: 'id' | 'dateStartFixed' | 'dateStart' | 'dateEndEstimated' | 'dateEndActual' | 'dateEnd' | 'quantity' | 'state' | 'next' | 'previous' | 'machine' | 'stage' | 'createdAt' | 'updatedAt';
     Mutation: 'projectStageScheduleCreate' | 'projectStageScheduleUpdate' | 'projectStageScheduleDelete';
     Machine: 'schedules';
     ProjectStage: 'schedules';
@@ -14,8 +14,8 @@ export namespace ProjectStageScheduleModule {
   };
   
   interface DefinedInputFields {
-    ProjectStageScheduleInputCreate: 'dateStart' | 'dateEnd' | 'quantity' | 'state' | 'previousId' | 'machineId' | 'stageId';
-    ProjectStageScheduleInputUpdate: 'dateStart' | 'dateEnd' | 'quantity' | 'state' | 'previousId' | 'machineId';
+    ProjectStageScheduleInputCreate: 'dateStartFixed' | 'quantity' | 'state' | 'previousId' | 'machineId' | 'stageId';
+    ProjectStageScheduleInputUpdate: 'dateStartFixed' | 'quantity' | 'state' | 'previousId' | 'machineId';
   };
   
   export type ProjectStageScheduleStateEnum = DefinedEnumValues['ProjectStageScheduleStateEnum'];
@@ -47,9 +47,11 @@ export namespace ProjectStageScheduleModule {
     ProjectStageSchedule?: {
       '*'?: gm.Middleware[];
       id?: gm.Middleware[];
+      dateStartFixed?: gm.Middleware[];
       dateStart?: gm.Middleware[];
       dateEndEstimated?: gm.Middleware[];
       dateEndActual?: gm.Middleware[];
+      dateEnd?: gm.Middleware[];
       quantity?: gm.Middleware[];
       state?: gm.Middleware[];
       next?: gm.Middleware[];

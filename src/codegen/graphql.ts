@@ -146,6 +146,12 @@ export type Mutation = {
   projectStageScheduleCreate: MutationResponse;
   /** delete a project stage schedule */
   projectStageScheduleDelete: MutationResponse;
+  /** create a project stage schedule interruption */
+  projectStageScheduleInterruptionCreate: MutationResponse;
+  /** delete a project stage schedule interruption */
+  projectStageScheduleInterruptionDelete: MutationResponse;
+  /** update a project stage schedule interruption */
+  projectStageScheduleInterruptionUpdate: MutationResponse;
   /** update a project stage schedule */
   projectStageScheduleUpdate: MutationResponse;
   /** update a project stage */
@@ -236,6 +242,25 @@ export type MutationProjectStageScheduleDeleteArgs = {
 
 
 /** graphql Mutation root */
+export type MutationProjectStageScheduleInterruptionCreateArgs = {
+  input: ProjectStageScheduleInterruptionInputCreate;
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageScheduleInterruptionDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** graphql Mutation root */
+export type MutationProjectStageScheduleInterruptionUpdateArgs = {
+  id: Scalars['ID']['input'];
+  input: ProjectStageScheduleInterruptionInputUpdate;
+};
+
+
+/** graphql Mutation root */
 export type MutationProjectStageScheduleUpdateArgs = {
   id: Scalars['ID']['input'];
   input: ProjectStageScheduleInputUpdate;
@@ -274,6 +299,8 @@ export type Project = {
   /** code associated with the project */
   code: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
+  /** description for this project */
+  description?: Maybe<Scalars['String']['output']>;
   /** project's due date */
   dueDate?: Maybe<Scalars['DateTime']['output']>;
   /** fee for each part */
@@ -295,6 +322,8 @@ export type ProjectInputCreate = {
   clientId: Scalars['String']['input'];
   /** code associated with the project */
   code: Scalars['String']['input'];
+  /** description for this project */
+  description?: InputMaybe<Scalars['String']['input']>;
   /** project's due date */
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** fee for each part */
@@ -311,6 +340,8 @@ export type ProjectInputUpdate = {
   clientId?: InputMaybe<Scalars['String']['input']>;
   /** code associated with the project */
   code?: InputMaybe<Scalars['String']['input']>;
+  /** description for this project */
+  description?: InputMaybe<Scalars['String']['input']>;
   /** project's due date */
   dueDate?: InputMaybe<Scalars['DateTime']['input']>;
   /** fee for each part */
@@ -362,12 +393,16 @@ export type ProjectStageInputUpdate = {
 export type ProjectStageSchedule = {
   __typename?: 'ProjectStageSchedule';
   createdAt: Scalars['DateTime']['output'];
+  /** end date of the schedule (its either the estimated or the actual) */
+  dateEnd?: Maybe<Scalars['DateTime']['output']>;
   /** actual date when the schedule has ended */
   dateEndActual?: Maybe<Scalars['DateTime']['output']>;
   /** estimated date when the schedule ends */
   dateEndEstimated?: Maybe<Scalars['DateTime']['output']>;
-  /** date when the schedule starts */
+  /** start date of the schedule */
   dateStart?: Maybe<Scalars['DateTime']['output']>;
+  /** fixed date when the schedule starts */
+  dateStartFixed?: Maybe<Scalars['DateTime']['output']>;
   /** the unique identifier */
   id: Scalars['ID']['output'];
   /** list of interruptions in the schedule */
@@ -390,10 +425,8 @@ export type ProjectStageSchedule = {
 };
 
 export type ProjectStageScheduleInputCreate = {
-  /** date when the schedule ends */
-  dateEnd?: InputMaybe<Scalars['DateTime']['input']>;
-  /** date when the schedule starts */
-  dateStart?: InputMaybe<Scalars['DateTime']['input']>;
+  /** fixed date when the schedule starts */
+  dateStartFixed?: InputMaybe<Scalars['DateTime']['input']>;
   /** the machine that is being used for this stage schedule */
   machineId: Scalars['ID']['input'];
   /** metadata for this specific schedule */
@@ -409,10 +442,8 @@ export type ProjectStageScheduleInputCreate = {
 };
 
 export type ProjectStageScheduleInputUpdate = {
-  /** date when the schedule ends */
-  dateEnd?: InputMaybe<Scalars['DateTime']['input']>;
-  /** date when the schedule starts */
-  dateStart?: InputMaybe<Scalars['DateTime']['input']>;
+  /** fixed date when the schedule starts */
+  dateStartFixed?: InputMaybe<Scalars['DateTime']['input']>;
   /** the machine that is being used for this stage schedule */
   machineId?: InputMaybe<Scalars['ID']['input']>;
   /** metadata for this specific schedule */
@@ -494,17 +525,17 @@ export type ProjectStageScheduleMetadataInputCreate = {
 
 export type ProjectStageScheduleMetadataInputUpdate = {
   /** execution duration in minutes */
-  durationExecution: Scalars['Int']['input'];
+  durationExecution?: InputMaybe<Scalars['Int']['input']>;
   /** preparation duration before each execution in minutes */
-  durationPreparation: Scalars['Int']['input'];
+  durationPreparation?: InputMaybe<Scalars['Int']['input']>;
   /** initial setup duration in minutes */
-  durationSetup: Scalars['Int']['input'];
+  durationSetup?: InputMaybe<Scalars['Int']['input']>;
   /** estimated efficiency of the schedule (between 0 and 1) */
-  efficiencyEstimated: Scalars['Float']['input'];
+  efficiencyEstimated?: InputMaybe<Scalars['Float']['input']>;
   /** how many output parts are produced per execution */
-  numberOfOutputParts: Scalars['Int']['input'];
+  numberOfOutputParts?: InputMaybe<Scalars['Int']['input']>;
   /** how many setups are required to produce all output parts */
-  numberOfSetups: Scalars['Int']['input'];
+  numberOfSetups?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** enum for project state schedule state */
@@ -771,6 +802,9 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   projectStageDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageDeleteArgs, 'id'>>;
   projectStageScheduleCreate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleCreateArgs, 'input'>>;
   projectStageScheduleDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleDeleteArgs, 'id'>>;
+  projectStageScheduleInterruptionCreate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleInterruptionCreateArgs, 'input'>>;
+  projectStageScheduleInterruptionDelete?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleInterruptionDeleteArgs, 'id'>>;
+  projectStageScheduleInterruptionUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleInterruptionUpdateArgs, 'id' | 'input'>>;
   projectStageScheduleUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageScheduleUpdateArgs, 'id' | 'input'>>;
   projectStageUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectStageUpdateArgs, 'id' | 'input'>>;
   projectUpdate?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationProjectUpdateArgs, 'id' | 'input'>>;
@@ -791,6 +825,7 @@ export type ProjectResolvers<ContextType = Context, ParentType extends Resolvers
   client?: Resolver<ResolversTypes['Client'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   dueDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   fee?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -815,9 +850,11 @@ export type ProjectStageResolvers<ContextType = Context, ParentType extends Reso
 
 export type ProjectStageScheduleResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProjectStageSchedule'] = ResolversParentTypes['ProjectStageSchedule']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dateEnd?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   dateEndActual?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   dateEndEstimated?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   dateStart?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  dateStartFixed?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   interruptions?: Resolver<Array<ResolversTypes['ProjectStageScheduleInterruption']>, ParentType, ContextType>;
   machine?: Resolver<ResolversTypes['Machine'], ParentType, ContextType>;

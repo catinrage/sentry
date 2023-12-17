@@ -11,3 +11,6 @@ export const validateProjectStageScheduleMetadataCreate = zod.object({
     .min(0, { message: 'بازدهی تخمین زده شده نمیتواند کمتر از 0 باشد' })
     .max(1, { message: 'بازدهی تخمین زده شده نمیتواند بیشتر از 1 باشد' }),
 });
+
+export const validateProjectStageScheduleMetadataUpdate =
+  validateProjectStageScheduleMetadataCreate.partial();

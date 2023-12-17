@@ -10,3 +10,7 @@
 - modules: maybe a review on comments for graphlq schema's
 
 - dependency injection: when deleing projects for example it checks if project has any stage and if have throws an error, while project shouldn't know about stages
+
+# Ideas
+
+- timeline model: be able to create time lines, each schedule belongs to a timeline, and time lines can be compared

@@ -5,24 +5,20 @@ import { ProjectStageService } from './service';
 export const resolvers: ProjectStageModule.Resolvers = {
   Project: {
     stages: async (parent) => {
-      const stages = (
-        await prisma.project.findUniqueOrThrow({
+      return await prisma.project
+        .findUniqueOrThrow({
           where: {
             id: parent.id,
           },
-          include: {
-            stages: {
-              include: {
-                project: {
-                  include: { client: true },
-                },
-                defaultMetadata: true,
-              },
-            },
-          },
         })
-      ).stages;
-      return stages;
+        .stages({
+          include: {
+            project: {
+              include: { client: true },
+            },
+            defaultMetadata: true,
+          },
+        });
     },
   },
   ProjectStage: {
