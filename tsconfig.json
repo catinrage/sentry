@@ -6,7 +6,7 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "build",
-    "rootDir": "src",
+    "rootDir": "./",
     "types": ["bun-types"],
     "experimentalDecorators": true,
     "baseUrl": ".",
@@ -17,6 +17,6 @@
       "@helpers": ["src/helpers"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "build"]
 }

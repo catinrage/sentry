@@ -2,7 +2,7 @@
 
 ## Create a Module
 
-0. create prisma model first
+0. create prisma model first (if needed)
 1. create the folder with respective name in the modules folder
 2. create types for the module, notice that if its gonna extend any other module | `schema.graphql`
 3. pull related enums from prisma if any exists | `enums.graphql`
@@ -11,6 +11,8 @@
 6. create resolver if needed | `resolver.ts`
 7. create module object in the index.ts | `index.ts`
 8. add the service to `aliases` export
+9. add this model's database reset function to /tests/helpers/reset-db.ts
+10. write test
 
 -final folder structure :
 

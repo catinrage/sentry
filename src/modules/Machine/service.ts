@@ -42,7 +42,7 @@ export class MachineService {
 
   static async delete(machineId: string): Promise<MutationResponse> {
     try {
-      await validateMachineUpdate.parseAsync({ id: machineId });
+      await validateMachineDelete.parseAsync({ id: machineId });
       const machine = await prisma.machine.delete({
         where: {
           id: machineId,

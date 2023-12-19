@@ -33,13 +33,13 @@ const validateProjectStageScheduleInterruptionBase = zod.object({
 
 export const validateProjectStageScheduleInterruptionCreate =
   validateProjectStageScheduleInterruptionBase.superRefine(async (args, ctx) => {
-    // FIXME: interruptions can not be interfered with each other (also check in update)
     if (args.dateStart > args.dateEnd) {
       ctx.addIssue({
         code: 'custom',
         message: 'تاریخ پایان وقفه نمیتواند قبل از تاریخ شروع وقفه باشد',
-        path: ['interruption', 'dateEnd'],
+        path: ['dateEnd'],
       });
+      return zod.NEVER;
     }
     const schedule = await prisma.projectStageSchedule.findUnique({
       where: {
@@ -47,9 +47,28 @@ export const validateProjectStageScheduleInterruptionCreate =
       },
       include: {
         previous: true,
+        interruptions: true,
       },
     });
     if (!schedule) return;
+    for (const interruption of schedule.interruptions) {
+      if (interruption.dateStart < args.dateStart && interruption.dateEnd > args.dateStart) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'تاریخ وقفه با وقفه دیگری تداخل دارد',
+          path: ['dateStart'],
+        });
+        return zod.NEVER;
+      }
+      if (interruption.dateStart < args.dateEnd && interruption.dateEnd > args.dateEnd) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'تاریخ وقفه با وقفه دیگری تداخل دارد',
+          path: ['dateEnd'],
+        });
+        return zod.NEVER;
+      }
+    }
     const scheduleDateStart =
       schedule.dateStartFixed || schedule.previous?.dateEndActual || schedule.previous?.dateEndEstimated;
     if (!scheduleDateStart) return;
@@ -57,7 +76,7 @@ export const validateProjectStageScheduleInterruptionCreate =
       ctx.addIssue({
         code: 'custom',
         message: 'تاریخ شروع وقفه نمیتواند قبل از تاریخ شروع زمانبندی باشد',
-        path: ['interruption', 'dateStart'],
+        path: ['dateStart'],
       });
     }
   });
@@ -77,30 +96,30 @@ export const validateProjectStageScheduleInterruptionUpdate = zod
     data: validateProjectStageScheduleInterruptionBase.partial(),
   })
   .superRefine(async (args, ctx) => {
+    const dateStart =
+      args.data.dateStart ||
+      (
+        await prisma.projectStageScheduleInterruption.findUnique({
+          where: {
+            id: args.id,
+          },
+        })
+      )?.dateStart;
+    const dateEnd =
+      args.data.dateEnd ||
+      (
+        await prisma.projectStageScheduleInterruption.findUnique({
+          where: {
+            id: args.id,
+          },
+        })
+      )?.dateEnd;
     if (args.data.dateStart || args.data.dateEnd) {
-      const dateStart =
-        args.data.dateStart ||
-        (
-          await prisma.projectStageScheduleInterruption.findUnique({
-            where: {
-              id: args.id,
-            },
-          })
-        )?.dateStart;
-      const dateEnd =
-        args.data.dateEnd ||
-        (
-          await prisma.projectStageScheduleInterruption.findUnique({
-            where: {
-              id: args.id,
-            },
-          })
-        )?.dateEnd;
       if (dateStart && dateEnd && dateStart > dateEnd) {
         ctx.addIssue({
           code: 'custom',
           message: 'تاریخ پایان وقفه نمیتواند قبل از تاریخ شروع وقفه باشد',
-          path: ['interruption', 'dateEnd'],
+          path: ['dateEnd'],
         });
       }
     }
@@ -114,9 +133,29 @@ export const validateProjectStageScheduleInterruptionUpdate = zod
       .schedule({
         include: {
           previous: true,
+          interruptions: true,
         },
       });
     if (!schedule) return;
+    if (!dateStart || !dateEnd) return;
+    for (const interruption of schedule.interruptions) {
+      if (interruption.dateStart < dateStart && interruption.dateEnd > dateStart) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'تاریخ وقفه با وقفه دیگری تداخل دارد',
+          path: ['dateStart'],
+        });
+        return zod.NEVER;
+      }
+      if (interruption.dateStart < dateEnd && interruption.dateEnd > dateEnd) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'تاریخ وقفه با وقفه دیگری تداخل دارد',
+          path: ['dateEnd'],
+        });
+        return zod.NEVER;
+      }
+    }
     const scheduleDateStart =
       schedule.dateStartFixed || schedule.previous?.dateEndActual || schedule.previous?.dateEndEstimated;
     if (!scheduleDateStart) return;
@@ -124,7 +163,7 @@ export const validateProjectStageScheduleInterruptionUpdate = zod
       ctx.addIssue({
         code: 'custom',
         message: 'تاریخ شروع وقفه نمیتواند قبل از تاریخ شروع زمانبندی باشد',
-        path: ['interruption', 'dateStart'],
+        path: ['dateStart'],
       });
     }
   });
