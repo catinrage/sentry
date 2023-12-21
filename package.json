@@ -13,7 +13,7 @@
     "migrate": "prisma migrate dev --preview-feature",
     "test:int": "./scripts/run-test.sh",
     "test:int:ui": "./scripts/run-test.sh --ui",
-    "build": "echo 'TBD' && exit 1",
+    "build": "bun build ./src/index.ts --outdir ./build --target bun",
     "deploy": "echo 'TBD' && exit 1"
   },
   "keywords": [],
@@ -26,6 +26,7 @@
     "@graphql-codegen/graphql-modules-preset": "^4.0.1",
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@parcel/watcher": "^2.3.0",
+    "@types/validator": "^13.11.7",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "@vitest/ui": "^1.0.4",
@@ -48,6 +49,7 @@
     "graphql-scalars": "^1.22.4",
     "graphql-type-json": "^0.3.2",
     "reflect-metadata": "^0.1.13",
+    "validator": "^13.11.0",
     "zod": "^3.22.4"
   }
 }

@@ -3,7 +3,6 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { createApplication } from 'graphql-modules';
 import modules from './modules';
-import { PrismaClient } from '@prisma/client';
 
 const application = createApplication({
   modules,
@@ -22,5 +21,7 @@ const { url } = await startStandaloneServer(server, {
     };
   },
 });
+
+console.log('hi');
 
 console.log(`🚀 Server ready at ${url}`);

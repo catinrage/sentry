@@ -1,39 +1,66 @@
-import { z as zod } from 'zod';
+import { ZodNaN, ZodObject, ZodRawShape, ZodType, ZodTypeDef, z as zod } from 'zod';
+import validator from 'validator';
 import { ClientService } from '@services';
+import { ClientInputCreate, ClientInputUpdate } from 'src/codegen/graphql';
 
-export const validateClientCreate = zod.object({
-  name: zod
-    .string()
-    .min(2, { message: 'نام مشتری باید حداقل 2 حرف داشته باشد' })
-    .max(255, { message: 'نام مشتری باید حداکثر 255 حرف داشته باشد' })
-    .regex(/^[a-zA-Z0-9\u0600-\u06FF\s_-]+$/, {
-      message: 'نام مشتری باید فقط شامل حروف انگلیسی، فارسی، اعداد، فاصله، خط تیره و زیرخط باشد',
-    })
-    .refine(
-      async (name) => {
-        return !(await ClientService.exists({
+export const validateClientCreate: ZodObject<ZodRawShape, 'strict', zod.ZodTypeAny, ClientInputCreate> = zod
+  .object({
+    name: zod
+      .string()
+      .transform((data) => {
+        return data.trim();
+      })
+      .superRefine(async (name, { addIssue, path }) => {
+        if (!validator.isLength(name, { min: 2, max: 256 })) {
+          addIssue({
+            code: 'custom',
+            message: 'نام مشتری باید حداقل 2 و حداکثر 256 حرف داشته باشد',
+            path,
+          });
+        }
+        if (!validator.matches(name, /^[a-zA-Z0-9\u0600-\u06FF\s_-]+$/)) {
+          addIssue({
+            code: 'custom',
+            message: 'نام مشتری باید فقط شامل حروف انگلیسی، فارسی، اعداد، فاصله، خط تیره و زیرخط باشد',
+            path,
+          });
+        }
+        const nameIsNotUnique = await ClientService.exists({
           name,
-        }));
-      },
-      {
-        message: 'نام مشتری نمیتواند تکراری باشد, یک مشتری با این نام ثبت شده است',
-      },
-    ),
-});
+        });
+        if (nameIsNotUnique) {
+          addIssue({
+            code: 'custom',
+            message: 'نام مشتری نمیتواند تکراری باشد',
+            path,
+          });
+        }
+      }),
+  })
+  .strict();
 
-export const validateClientUpdate = zod.object({
-  id: zod.string().refine(
-    async (id) => {
-      return await ClientService.exists({
+export const validateClientUpdate: ZodObject<
+  ZodRawShape,
+  'strict',
+  zod.ZodTypeAny,
+  { id: string; data: ClientInputUpdate }
+> = zod
+  .object({
+    id: zod.string().superRefine(async (id, { addIssue, path }) => {
+      const clientIdIsInvalid = !(await ClientService.exists({
         id,
-      });
-    },
-    {
-      message: 'مشتری مورد نظر یافت نشد',
-    },
-  ),
-  data: validateClientCreate.partial(),
-});
+      }));
+      if (clientIdIsInvalid) {
+        addIssue({
+          code: 'custom',
+          message: 'مشتری مورد نظر یافت نشد',
+          path,
+        });
+      }
+    }),
+    data: validateClientCreate.strict().partial(),
+  })
+  .strict();
 
 export const validateClientDelete = zod.object({
   id: zod
