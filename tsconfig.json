@@ -6,10 +6,11 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "build",
-    "rootDir": "./",
+    "rootDir": "./src",
     "types": ["bun-types"],
     "experimentalDecorators": true,
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@modules": ["src/modules"],
       "@providers": ["src/providers"],
@@ -17,6 +18,10 @@
       "@helpers": ["src/helpers"]
     }
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules", "build"]
+  "include": ["src/**/*.ts", "src/**/*.graphql"],
+  "exclude": ["node_modules", "build"],
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true
+  }
 }

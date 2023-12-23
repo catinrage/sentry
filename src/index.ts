@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { createApplication } from 'graphql-modules';
@@ -21,7 +20,5 @@ const { url } = await startStandaloneServer(server, {
     };
   },
 });
-
-console.log('hi');
 
 console.log(`🚀 Server ready at ${url}`);

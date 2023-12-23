@@ -1,3 +1,12 @@
 {
-  "cSpell.words": ["codegen", "datasources", "graphlq", "outdir", "QLJSON", "typedefs", "WIRECUT"]
+  "cSpell.words": [
+    "codegen",
+    "copyfiles",
+    "datasources",
+    "graphlq",
+    "outdir",
+    "QLJSON",
+    "typedefs",
+    "WIRECUT"
+  ]
 }

@@ -5,16 +5,17 @@
   "description": "Brothers Dynamic Ecosystem - Sentry",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "bun run --watch ./src/index.ts & bun codegen",
-    "start": "bun run ./src/index.ts",
+    "dev": "bun run --watch ./src/index.ts",
     "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
     "format": "prettier --write '*/**/*.{ts,tsx,json}'",
     "codegen": "graphql-codegen --config codegen.yml --watch",
     "migrate": "prisma migrate dev --preview-feature",
     "test:int": "./scripts/run-test.sh",
     "test:int:ui": "./scripts/run-test.sh --ui",
-    "build": "bun build ./src/index.ts --outdir ./build --target bun",
-    "deploy": "echo 'TBD' && exit 1"
+    "deploy": "bun install && prisma migrate deploy && prisma generate",
+    "build": "rm -rf build && tsc -p tsconfig.json && tsc-alias && copyfiles ./src/**/*.graphql build/ -u 1 && replace '\\.ts' '.js' ./build/ -r --include='*.js'",
+    "start": "bun run ./build/index.js",
+    "go": "bun run deploy && bun run build && bun run start"
   },
   "keywords": [],
   "author": "catinrage",
@@ -31,12 +32,15 @@
     "@typescript-eslint/parser": "^4.29.3",
     "@vitest/ui": "^1.0.4",
     "bun-types": "^1.0.12",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.2",
     "prisma": "^5.6.0",
-    "typescript": "^4.3.5",
+    "replace": "^1.2.2",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.3.3",
     "vite-tsconfig-paths": "^4.2.2",
     "vitest": "^1.0.4"
   },
@@ -50,6 +54,7 @@
     "graphql-type-json": "^0.3.2",
     "reflect-metadata": "^0.1.13",
     "validator": "^13.11.0",
+    "validator.js": "^2.0.4",
     "zod": "^3.22.4"
   }
 }
