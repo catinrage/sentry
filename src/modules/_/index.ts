@@ -4,7 +4,7 @@ import { join } from 'path';
 
 export const commonModule = createModule({
   id: 'base',
-  dirname: __dirname,
-  typeDefs: loadFilesSync(join(__dirname, './*.graphql')),
-  resolvers: loadFilesSync(join(__dirname, './resolvers.ts')),
+  dirname: import.meta.dir,
+  typeDefs: loadFilesSync(join(import.meta.dir, './*.graphql')),
+  resolvers: loadFilesSync(join(import.meta.dir, './resolvers.ts')),
 });

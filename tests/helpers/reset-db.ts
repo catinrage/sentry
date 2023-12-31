@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 export default async (): Promise<void> => {
   await prisma.$transaction([
+    prisma.projectStageScheduleMetadata.deleteMany(),
+    prisma.projectStageScheduleInterruption.deleteMany(),
     prisma.projectStageSchedule.deleteMany(),
     prisma.projectStage.deleteMany(),
     prisma.project.deleteMany(),

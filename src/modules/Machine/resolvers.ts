@@ -1,6 +1,6 @@
-import { prisma } from '@providers';
+import controllers from '@controllers';
+import prisma from '@prisma';
 import { MachineModule } from './codegen/module-types';
-import { MachineService } from './service';
 
 export const resolvers: MachineModule.Resolvers = {
   Query: {
@@ -17,13 +17,13 @@ export const resolvers: MachineModule.Resolvers = {
   },
   Mutation: {
     machineCreate: async (_, { input }) => {
-      return await MachineService.create(input);
+      return await controllers['Machine'].create(input);
     },
     machineUpdate: async (_, { id, input }) => {
-      return await MachineService.update(id, input);
+      return await controllers['Machine'].update(id, input);
     },
     machineDelete: async (_, { id }) => {
-      return await MachineService.delete(id);
+      return await controllers['Machine'].delete(id);
     },
   },
 };

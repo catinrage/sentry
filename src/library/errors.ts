@@ -103,3 +103,10 @@ export function handle(error: unknown): MutationResponse {
       return handleUnknownError();
   }
 }
+
+export default {
+  handle,
+  handleValidationError,
+  handlePrismaError,
+  handleUnknownError,
+};

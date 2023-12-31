@@ -1,6 +1,6 @@
-import { prisma } from '@providers';
+import controllers from '@controllers';
+import prisma from '@prisma';
 import { ProjectStageScheduleModule } from './codegen/module-types';
-import { ProjectStageScheduleService } from './service';
 
 const scheduleIncludeSubset = {
   include: {
@@ -96,13 +96,13 @@ export const resolvers: ProjectStageScheduleModule.Resolvers = {
   },
   Mutation: {
     projectStageScheduleCreate: async (_, { input }) => {
-      return await ProjectStageScheduleService.create(input);
+      return await controllers['ProjectStageSchedule'].create(input);
     },
     projectStageScheduleUpdate: async (_, { id, input }) => {
-      return await ProjectStageScheduleService.update(id, input);
+      return await controllers['ProjectStageSchedule'].update(id, input);
     },
     projectStageScheduleDelete: async (_, { id }) => {
-      return await ProjectStageScheduleService.delete(id);
+      return await controllers['ProjectStageSchedule'].delete(id);
     },
   },
 };

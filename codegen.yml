@@ -7,8 +7,8 @@ generates:
       inputMaybeValue: 'T | undefined'
     preset: 'graphql-modules'
     presetConfig:
-      baseTypesPath: '../codegen/graphql.ts'
-      filename: 'codegen/module-types.ts'
+      baseTypesPath: '../_codegen/graphql.ts'
+      filename: '_codegen/module-types.ts'
     plugins:
       - add:
           content: '/* eslint-disable */'

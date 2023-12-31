@@ -1,6 +1,6 @@
-import { prisma } from '@providers';
+import controllers from '@controllers';
+import prisma from '@prisma';
 import { ProjectModule } from './codegen/module-types';
-import { ProjectService } from './service';
 
 export const resolvers: ProjectModule.Resolvers = {
   Client: {
@@ -53,13 +53,13 @@ export const resolvers: ProjectModule.Resolvers = {
   },
   Mutation: {
     projectCreate: async (_, { input }) => {
-      return await ProjectService.create(input);
+      return await controllers['Project'].create(input);
     },
     projectUpdate: async (_, { id, input }) => {
-      return await ProjectService.update(id, input);
+      return await controllers['Project'].update(id, input);
     },
     projectDelete: async (_, { id }) => {
-      return await ProjectService.delete(id);
+      return await controllers['Project'].delete(id);
     },
   },
 };

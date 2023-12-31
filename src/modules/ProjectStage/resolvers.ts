@@ -1,6 +1,6 @@
-import { prisma } from '@providers';
+import controllers from '@controllers';
+import prisma from '@prisma';
 import { ProjectStageModule } from './codegen/module-types';
-import { ProjectStageService } from './service';
 
 export const resolvers: ProjectStageModule.Resolvers = {
   Project: {
@@ -40,20 +40,16 @@ export const resolvers: ProjectStageModule.Resolvers = {
   },
   Mutation: {
     projectStageCreate: async (_, { input }) => {
-      const projectStage = await ProjectStageService.create(input);
+      const projectStage = await controllers['ProjectStage'].create(input);
       return projectStage;
     },
     projectStageUpdate: async (_, { id, input }) => {
-      const projectStage = await ProjectStageService.update(id, input);
+      const projectStage = await controllers['ProjectStage'].update(id, input);
       return projectStage;
     },
     projectStageDelete: async (_, { id }) => {
-      const projectStage = await ProjectStageService.delete(id);
+      const projectStage = await controllers['ProjectStage'].delete(id);
       return projectStage;
-    },
-    projectReorderStages: async (_, { projectId }) => {
-      const project = await ProjectStageService.reOrderStages(projectId);
-      return project;
     },
   },
 };

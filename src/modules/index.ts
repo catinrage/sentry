@@ -1,7 +1,7 @@
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { join } from 'path';
 
-let loadedModules = loadFilesSync(join(__dirname, './*/index.ts'));
+let loadedModules = loadFilesSync(join(import.meta.dir, './*/index.ts'));
 loadedModules = loadedModules.map((module) => {
   for (const key in module) {
     if (key.startsWith('__')) {

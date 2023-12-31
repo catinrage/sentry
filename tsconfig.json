@@ -6,19 +6,21 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "build",
-    "rootDir": "./src",
+    "rootDir": "./",
     "types": ["bun-types"],
     "experimentalDecorators": true,
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
       "@modules": ["src/modules"],
-      "@providers": ["src/providers"],
-      "@services": ["src/aliases/services.ts"],
-      "@helpers": ["src/helpers"]
+      "@controllers": ["src/library/controllers.ts"],
+      "@inspectors": ["src/library/inspectors.ts"],
+      "@prisma": ["src/library/prisma.ts"],
+      "@errors": ["src/library/errors.ts"],
+      "@types": ["src/types"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.graphql"],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "build"],
   "tsc-alias": {
     "verbose": false,

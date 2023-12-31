@@ -1,10 +1,12 @@
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { createModule } from 'graphql-modules';
 import { join } from 'path';
+import { resolvers } from './resolvers';
+
+const typeDefs = loadFilesSync(join(import.meta.dir, './*.graphql'));
 
 export const clientModule = createModule({
   id: 'client-module',
-  dirname: __dirname,
-  typeDefs: loadFilesSync(join(__dirname, './*.graphql')),
-  resolvers: loadFilesSync(join(__dirname, './resolvers.ts')),
+  typeDefs,
+  resolvers,
 });
