@@ -2,17 +2,19 @@
 
 ## Create a Module
 
-0. create prisma model first (if needed)
-1. create the folder with respective name in the modules folder
-2. create types for the module, notice that if its gonna extend any other module | `schema.graphql`
-3. pull related enums from prisma if any exists | `enums.graphql`
-4. create validation for the module if needed | `validator.ts`
-5. create the service for that module if needed | `service.ts`
-6. create resolver if needed | `resolver.ts`
-7. create module object in the index.ts | `index.ts`
-8. add the service to `aliases` export
-9. add this model's database reset function to /tests/helpers/reset-db.ts
-10. write test
+. create prisma model first (if needed)
+. create the folder with respective name in the modules folder
+. create types for the module, notice that if its gonna extend any other module | `schema.graphql`
+. pull related enums from prisma if any exists | `enums.graphql`
+. create validation for the module if needed | `inspector.ts`
+. add the inspector object to /src/library/inspectors.ts
+. create the controller for that module if needed | `controller.ts`
+. add the controller class to /src/library/controllers.ts
+. create resolver if needed | `resolver.ts`
+. create module object in the index.ts | `index.ts`
+. add the service to `aliases` export
+. add this model's database reset function to /tests/helpers/reset-db.ts
+. write tests
 
 -final folder structure :
 
@@ -21,7 +23,7 @@
    ┣ enums.graphql
    ┣ index.ts
    ┣ resolvers.ts
-   ┣ service.ts
+   ┣ controller.ts
    ┣ schema.graphql
-   ┗ validator.ts
+   ┗ inspector.ts
 ```

@@ -9,7 +9,16 @@ export class ProjectController implements ControllerType {
       .at('create')
       .execute(data, async () => {
         return await prisma.project.create({
-          data,
+          data: {
+            code: data.code,
+            title: data.title,
+            quantity: data.quantity,
+            client: {
+              connect: {
+                id: data.clientId,
+              },
+            },
+          },
         });
       });
   }

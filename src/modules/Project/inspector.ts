@@ -100,7 +100,8 @@ export const inspectors: InspectorType<ProjectInputCreate, ProjectInputUpdate> =
               });
               return zod.NEVER;
             }
-          }),
+          })
+          .optional(),
         dueDate: zod.date().optional(),
         description: zod
           .string()
@@ -115,7 +116,8 @@ export const inspectors: InspectorType<ProjectInputCreate, ProjectInputUpdate> =
               });
               return zod.NEVER;
             }
-          }),
+          })
+          .optional(),
       })
       .strict();
   },

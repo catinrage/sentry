@@ -61,7 +61,7 @@ export const resolvers: ProjectStageScheduleModule.Resolvers = {
         .previous(scheduleIncludeSubset);
     },
     dateStart: (parent) => {
-      return parent.dateStartFixed || parent.previous?.dateEnd || parent.previous?.dateEndEstimated;
+      return parent.dateStartFixed || parent.previous?.dateEnd;
     },
     dateEnd: async (parent) => {
       return parent.dateEndActual || parent.dateEndEstimated;

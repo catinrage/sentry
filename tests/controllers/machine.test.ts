@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import controllers from '@controllers';
 
-describe('MachineService', () => {
+describe('Machine Controller', () => {
   it('Create / correct input [Success]', async () => {
     const machine = await controllers['Machine'].create({
       name: 'Test Machine',
@@ -27,12 +27,10 @@ describe('MachineService', () => {
     });
     expect(machine.id).toBeTypeOf('string');
     if (!machine.id) return;
-    console.log({ machine });
     const updatedMachine = await controllers['Machine'].update(machine.id, {
       name: 'Test Machine 2',
       type: 'CNC_TURNING',
     });
-    console.log(updatedMachine.errors);
 
     expect(updatedMachine.success).toBe(true);
   });

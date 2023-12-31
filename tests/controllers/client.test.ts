@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import controllers from '@controllers';
+import prisma from '@prisma';
 
-describe('ClientService', () => {
+describe('Client Controller', () => {
   it('Create / correct input [Success]', async () => {
     const client = await controllers['Client'].create({
       name: 'John Doe',
@@ -71,6 +72,13 @@ describe('ClientService', () => {
       title: 'Test Project',
       quantity: 100,
     });
+    await prisma.client
+      .findFirst({
+        where: {
+          id: client.id,
+        },
+      })
+      .projects();
     const deletedClient = await controllers['Client'].delete(client.id);
     expect(deletedClient.success).toBe(false);
   });

@@ -50,7 +50,6 @@ export const inspectors: InspectorType<ProjectStageScheduleInputCreate, ProjectS
         dateStartFixed: zod.date().optional(),
         previousId: zod
           .string()
-          .optional()
           .superRefine(async (previousId, { addIssue }) => {
             const previousIdIsInvalid = !(await prisma.projectStageSchedule.exists({
               id: previousId,
@@ -62,7 +61,23 @@ export const inspectors: InspectorType<ProjectStageScheduleInputCreate, ProjectS
               });
               return zod.NEVER;
             }
-          }),
+            const previousSchedule = await prisma.projectStageSchedule.findUnique({
+              where: {
+                id: previousId,
+              },
+              include: {
+                next: true,
+              },
+            });
+            if (previousSchedule?.next) {
+              addIssue({
+                code: 'custom',
+                message: 'زمانبندی قبلی انتخاب شده دارای زمانبندی بعدی می باشد',
+              });
+              return zod.NEVER;
+            }
+          })
+          .optional(),
         metadata: projectStageScheduleMetadata.create,
       })
       .strict();
@@ -89,6 +104,42 @@ export const inspectors: InspectorType<ProjectStageScheduleInputCreate, ProjectS
           path: ['previousId'],
         });
         return zod.NEVER;
+      }
+      if (args.dateStartFixed) {
+        let hasInterference = false;
+        const machine = await prisma.machine.findFirstOrThrow({
+          where: {
+            id: args.machineId,
+          },
+          include: {
+            schedules: {
+              include: {
+                previous: true,
+              },
+            },
+          },
+        });
+        for (const schedule of machine.schedules) {
+          const dateStart =
+            schedule.dateStartFixed ||
+            schedule.previous?.dateEndActual ||
+            schedule.previous?.dateEndEstimated;
+          const dateEnd = schedule.dateEndActual || schedule.dateEndEstimated;
+          if (dateStart && dateEnd) {
+            if (args.dateStartFixed >= dateStart && args.dateStartFixed <= dateEnd) {
+              hasInterference = true;
+              break;
+            }
+          }
+        }
+        if (hasInterference) {
+          addIssue({
+            code: 'custom',
+            message: 'زمان شروع با زمانبندی دیگری از این ماشین تداخل دارد',
+            path: ['dateStartFixed'],
+          });
+          return zod.NEVER;
+        }
       }
       const alreadyScheduledPartsForThisStage =
         (
@@ -145,6 +196,7 @@ export const inspectors: InspectorType<ProjectStageScheduleInputCreate, ProjectS
           .omit({
             stageId: true,
           })
+          .partial()
           .superRefine(async (args, { addIssue }) => {
             if (args.dateStartFixed && args.previousId) {
               addIssue({
@@ -196,6 +248,54 @@ export const inspectors: InspectorType<ProjectStageScheduleInputCreate, ProjectS
               path: ['quantity'],
             });
             return zod.NEVER;
+          }
+
+          if (args.data.dateStartFixed) {
+            let hasInterference = false;
+            const machineId =
+              args.data.machineId ||
+              (
+                await prisma.projectStageSchedule
+                  .findUniqueOrThrow({
+                    where: {
+                      id: args.id,
+                    },
+                  })
+                  .machine()
+              ).id;
+            const machine = await prisma.machine.findFirstOrThrow({
+              where: {
+                id: machineId,
+              },
+              include: {
+                schedules: {
+                  include: {
+                    previous: true,
+                  },
+                },
+              },
+            });
+            for (const schedule of machine.schedules) {
+              const dateStart =
+                schedule.dateStartFixed ||
+                schedule.previous?.dateEndActual ||
+                schedule.previous?.dateEndEstimated;
+              const dateEnd = schedule.dateEndActual || schedule.dateEndEstimated;
+              if (dateStart && dateEnd) {
+                if (args.data.dateStartFixed >= dateStart && args.data.dateStartFixed <= dateEnd) {
+                  hasInterference = true;
+                  break;
+                }
+              }
+            }
+            if (hasInterference) {
+              addIssue({
+                code: 'custom',
+                message: 'زمان شروع با زمانبندی دیگری از این ماشین تداخل دارد',
+                path: ['dateStartFixed'],
+              });
+              return zod.NEVER;
+            }
           }
 
           if (args.data.dateStartFixed || args.data.previousId) {
