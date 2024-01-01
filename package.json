@@ -5,17 +5,16 @@
   "description": "Brothers Dynamic Ecosystem - Sentry",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "bun run --watch ./src/index.ts",
+    "deploy:dev": "bun install && prisma migrate deploy && prisma generate",
+    "deploy:prod": "bun install -p && prisma migrate deploy && prisma generate",
+    "dev": "bun run --watch ./src/index.ts & bun run codegen",
+    "start": "bun run ./src/index.ts",
     "lint": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
     "format": "prettier --write '*/**/*.{ts,tsx,json}'",
     "codegen": "graphql-codegen --config codegen.yml --watch",
     "migrate": "prisma migrate dev --preview-feature",
-    "test:int": "./scripts/run-test.sh",
-    "test:int:ui": "./scripts/run-test.sh --ui",
-    "deploy": "bun install && prisma migrate deploy && prisma generate",
-    "build": "rm -rf build && tsc -p tsconfig.json && tsc-alias && copyfiles ./src/**/*.graphql build/ -u 1 && replace '\\.ts' '.js' ./build/ -r --include='*.js'",
-    "start": "bun run ./build/index.js",
-    "go": "bun run deploy && bun run build && bun run start"
+    "test": "./scripts/run-test.sh",
+    "test:ui": "./scripts/run-test.sh --ui"
   },
   "keywords": [],
   "author": "catinrage",

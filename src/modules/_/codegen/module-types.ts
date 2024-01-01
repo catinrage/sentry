@@ -24,9 +24,8 @@ export namespace _Module {
   export type Error = Pick<Types.Error, DefinedFields['Error']>;
   export type MutationResponse = Pick<Types.MutationResponse, DefinedFields['MutationResponse']>;
   
-  export type Scalars = Pick<Types.Scalars, 'DateTime' | 'Date' | 'Object'>;
+  export type Scalars = Pick<Types.Scalars, 'DateTime' | 'Object'>;
   export type DateTimeScalarConfig = Types.DateTimeScalarConfig;
-  export type DateScalarConfig = Types.DateScalarConfig;
   export type ObjectScalarConfig = Types.ObjectScalarConfig;
   
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
@@ -44,7 +43,6 @@ export namespace _Module {
     Error?: ErrorResolvers;
     MutationResponse?: MutationResponseResolvers;
     DateTime?: Types.Resolvers['DateTime'];
-    Date?: Types.Resolvers['Date'];
     Object?: Types.Resolvers['Object'];
   };
   

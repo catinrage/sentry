@@ -1,5 +1,4 @@
 scalar DateTime
-scalar Date
 scalar Object
 
 "graphql Query root"

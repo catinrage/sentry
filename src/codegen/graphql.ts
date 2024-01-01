@@ -17,7 +17,6 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Date: { input: any; output: any; }
   DateTime: { input: any; output: any; }
   Object: { input: any; output: any; }
 };
@@ -667,7 +666,6 @@ export type ResolversTypes = {
   Client: ResolverTypeWrapper<Client>;
   ClientInputCreate: ClientInputCreate;
   ClientInputUpdate: ClientInputUpdate;
-  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Error: ResolverTypeWrapper<Omit<Error, 'extension'> & { extension?: Maybe<ResolversTypes['ErrorExtension']> }>;
   ErrorCodeEnum: ErrorCodeEnum;
@@ -710,7 +708,6 @@ export type ResolversParentTypes = {
   Client: Client;
   ClientInputCreate: ClientInputCreate;
   ClientInputUpdate: ClientInputUpdate;
-  Date: Scalars['Date']['output'];
   DateTime: Scalars['DateTime']['output'];
   Error: Omit<Error, 'extension'> & { extension?: Maybe<ResolversParentTypes['ErrorExtension']> };
   ErrorExtension: ResolversUnionTypes<ResolversParentTypes>['ErrorExtension'];
@@ -756,10 +753,6 @@ export type ClientResolvers<ContextType = Context, ParentType extends ResolversP
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
-
-export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
-  name: 'Date';
-}
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
@@ -905,7 +898,6 @@ export type DefaultErrorExtensionResolvers<ContextType = Context, ParentType ext
 export type Resolvers<ContextType = Context> = {
   BadInputErrorExtension?: BadInputErrorExtensionResolvers<ContextType>;
   Client?: ClientResolvers<ContextType>;
-  Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   ErrorExtension?: ErrorExtensionResolvers<ContextType>;
@@ -923,6 +915,5 @@ export type Resolvers<ContextType = Context> = {
 };
 
 
-export type Date = Scalars["Date"];
 export type DateTime = Scalars["DateTime"];
 export type Object = Scalars["Object"];

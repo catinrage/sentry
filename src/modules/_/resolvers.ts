@@ -1,5 +1,5 @@
 import { _Module } from './codegen/module-types';
-import { DateTimeResolver, DateResolver } from 'graphql-scalars';
+import { DateTimeResolver } from 'graphql-scalars';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
 export const resolvers: _Module.Resolvers = {
@@ -22,6 +22,5 @@ export const resolvers: _Module.Resolvers = {
     ping: () => 'pong',
   },
   DateTime: DateTimeResolver,
-  Date: DateResolver,
   Object: GraphQLJSONObject,
 };
