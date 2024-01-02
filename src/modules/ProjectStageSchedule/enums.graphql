@@ -1,7 +1,0 @@
-"enum for project state schedule state"
-enum ProjectStageScheduleStateEnum {
-  PENDING
-  IN_PROGRESS
-  PAUSED
-  COMPLETED
-}

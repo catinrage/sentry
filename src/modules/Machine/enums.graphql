@@ -1,6 +1,0 @@
-" enum for machine type "
-enum MachineTypeEnum {
-  CNC_MILLING
-  CNC_TURNING
-  CNC_WIRECUT
-}
