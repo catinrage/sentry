@@ -2,7 +2,7 @@
 
 ## Developments
 
-First run `bun run deploy:dev` to install (all) dependencies and initiate prisma, then run bun run dev and start coding.
+First run `bun run deploy:dev` to install (all) dependencies and initiate prisma, then run `bun run dev` to start the development server.
 
 ## Production
 
