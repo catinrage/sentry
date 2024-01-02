@@ -1,0 +1,7 @@
+node_modules
+build
+.env
+.todo
+.checklist
+**/codegen/*.ts
+!src/codegen/context.ts

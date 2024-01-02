@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ES2022",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "rootDir": "./",
+    "types": ["bun-types"],
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "paths": {
+      "@modules": ["src/modules"],
+      "@controllers": ["src/library/controllers.ts"],
+      "@inspectors": ["src/library/inspectors.ts"],
+      "@prisma": ["src/library/prisma.ts"],
+      "@errors": ["src/library/errors.ts"],
+      "@types": ["src/types"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", "build"],
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true
+  }
+}
